@@ -31,32 +31,20 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training')
 
     # Common params
-    parser.add_argument("--config", help="The path of config file.", type=str)
+    parser.add_argument("--config", default='C:\D\github_zl\PaddleSeg_ZL\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
     parser.add_argument('--device',
                         help='Set the device place for training model.',
                         default='gpu',
                         choices=['cpu', 'gpu', 'xpu', 'npu', 'mlu'],
                         type=str)
-    parser.add_argument('--save_dir',
-                        help='The directory for saving the model snapshot.',
-                        type=str,
-                        default='./output')
-    parser.add_argument(
-        '--num_workers',
-        help=
-        'Number of workers for data loader. Bigger num_workers can speed up data processing.',
-        type=int,
-        default=0)
-    parser.add_argument('--do_eval',
-                        help='Whether to do evaluation in training.',
-                        action='store_true')
-    parser.add_argument(
-        '--use_vdl',
-        help='Whether to record the data to VisualDL in training.',
-        action='store_true')
-    parser.add_argument('--use_ema',
-                        help='Whether to ema the model in training.',
-                        action='store_true')
+    parser.add_argument('--save_dir',default='./output')
+    parser.add_argument('--num_workers',default=0)
+    # parser.add_argument('--do_eval',
+    #                     help='Whether to do evaluation in training.',
+    #                     action='store_true')
+    parser.add_argument('--do_eval',default=True)
+    parser.add_argument('--use_vdl',default=True)
+    parser.add_argument('--use_ema',default=True)
 
     # Runntime params
     parser.add_argument('--resume_model',
@@ -71,7 +59,7 @@ def parse_args():
         '--save_interval',
         help='How many iters to save a model snapshot once during training.',
         type=int,
-        default=1000)
+        default=100)
     parser.add_argument(
         '--log_iters',
         help='Display logging information at every `log_iters`.',
