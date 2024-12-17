@@ -44,7 +44,7 @@ def parse_args():
     #                     action='store_true')
     parser.add_argument('--do_eval',default=True)
     parser.add_argument('--use_vdl',default=True)
-    parser.add_argument('--use_ema',default=True)
+    parser.add_argument('--use_ema',default=False)
 
     # Runntime params
     parser.add_argument('--resume_model',
@@ -213,6 +213,7 @@ def main(args):
           optimizer=optimizer,
           save_dir=args.save_dir,
           iters=cfg.iters,
+          max_epoch=cfg.dic['max_epoch'],
           batch_size=cfg.batch_size,
           early_stop_intervals=args.early_stop_intervals,
           resume_model=args.resume_model,

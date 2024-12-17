@@ -69,6 +69,7 @@ def train(model,
           optimizer=None,
           save_dir='output',
           iters=10000,
+          max_epoch=300,
           batch_size=2,
           early_stop_intervals=None,
           resume_model=None,
@@ -178,6 +179,7 @@ def train(model,
         model = paddle.jit.to_static(model)
         logger.info("Successfully applied @to_static")
 
+
     avg_loss = 0.0
     avg_loss_list = []
     iters_per_epoch = len(batch_sampler)
@@ -189,6 +191,8 @@ def train(model,
     save_models = deque()
     batch_start = time.time()
     iter = start_iter
+
+    iters=iters_per_epoch*max_epoch
     while iter < iters and not stop_status:
         if iter == start_iter and use_ema:
             init_ema_params(ema_model, model)
