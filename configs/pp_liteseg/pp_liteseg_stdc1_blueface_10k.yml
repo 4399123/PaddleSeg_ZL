@@ -13,7 +13,7 @@ train_dataset:
       max_scale_factor: 2.5
       scale_step_size: 0.25
     - type: RandomPaddingCrop
-      crop_size: [224, 224]
+      crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomDistort
       brightness_range: 0.5
@@ -31,17 +31,16 @@ val_dataset:
     - type: Normalize
 
 optimizer:
-  type: SGD
-  momentum: 0.9
-  weight_decay: 5.0e-4
+  type: AdamW
+  weight_decay: 1.0e-3
 
 lr_scheduler:
-  type: PolynomialDecay
-  learning_rate: 0.01
-  end_lr: 0
-  power: 0.9
-  warmup_iters: 200
-  warmup_start_lr: 1.0e-5
+  type: CosineAnnealingDecay
+  learning_rate: 0.0001
+  T_max: 300
+  eta_min: 5.0e-6
+  warmup_iters: 1000
+  warmup_start_lr: 0.00001
 
 loss:
   types:

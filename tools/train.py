@@ -31,7 +31,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training')
 
     # Common params
-    parser.add_argument("--config", default='C:\D\github_zl\PaddleSeg_ZL\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
+    parser.add_argument("--config", default='..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
     parser.add_argument('--device',
                         help='Set the device place for training model.',
                         default='gpu',
