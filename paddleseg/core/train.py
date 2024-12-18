@@ -100,6 +100,7 @@ def train(model,
           logger=setup_logger(__file__),
           print_mem_info=False,
           shuffle=True,
+          printlabels=None,
           **kwargs):
     """
     Launch training.
@@ -209,6 +210,7 @@ def train(model,
     iters=iters_per_epoch*max_epoch   #将迭代次数修改为依据epochs来计算
     save_interval=iters_per_epoch     #训练完一个epoch 测试一次
     log_iters = max(iters_per_epoch // 10,1) #每一个epoch只展示10条训练结果
+    printlabels.insert(0, 'Class')  #方便展示测试结果
     while iter < iters and not stop_status:
         if iter == start_iter and use_ema:
             init_ema_params(ema_model, model)
@@ -368,6 +370,7 @@ def train(model,
                                                   precision=precision,
                                                   amp_level=amp_level,
                                                   logger=logger,
+                                                  printlabels=printlabels,
                                                   **test_config)
 
                 if use_ema:

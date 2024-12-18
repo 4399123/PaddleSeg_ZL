@@ -40,7 +40,8 @@ def evaluate(model,
              print_detail=True,
              auc_roc=False,
              use_multilabel=False,
-             logger=None):
+             logger=None,
+             printlabels=None):
     """
     Launch evalution.
 
@@ -233,13 +234,60 @@ def evaluate(model,
             logits_all, label_all, num_classes=eval_dataset.num_classes)
         auc_infor = ' Auc_roc: {:.4f}'.format(auc_roc)
 
+    # if print_detail:
+    #     # infor = "[EVAL] #Images: {} mIoU: {:.4f} Acc: {:.4f} Kappa: {:.4f} Dice: {:.4f}".format(
+    #     #     len(eval_dataset), miou, acc, kappa, mdice)
+    #     logger.info('---------------------------------------------------------------------------------')
+    #     infor = "[EVAL] #Images: {} mIoU: {:.4f} mAcc: {:.4f} recall: {:.4f} ".format(
+    #         len(eval_dataset), miou, np.average(class_precision),np.average(class_precision))
+    #     infor = infor + auc_infor if auc_roc else infor
+    #     logger.info(infor)
+    #     logger.info("[EVAL] Class IoU: \n" + str(np.round(class_iou, 4)))
+    #     logger.info("[EVAL] Class Precision: \n" + str(
+    #         np.round(class_precision, 4)))
+    #     logger.info("[EVAL] Class Recall: \n" + str(np.round(class_recall, 4)))
+    #     logger.info('---------------------------------------------------------------------------------')
+    # printlabels = ['background', 'QPZZ', 'MDBD', 'MNYW', 'WW', 'LMPS', 'BMQQ', 'LMHH', 'KTAK']
     if print_detail:
-        infor = "[EVAL] #Images: {} mIoU: {:.4f} Acc: {:.4f} Kappa: {:.4f} Dice: {:.4f}".format(
-            len(eval_dataset), miou, acc, kappa, mdice)
+        logger.info('---------------------------------------------------------------------------------')
+        infor = "[EVAL] #Images: {} |mIoU: {:.4f} |mAcc: {:.4f} |recall: {:.4f} ".format(
+            len(eval_dataset), miou, np.average(class_precision), np.average(class_precision))
         infor = infor + auc_infor if auc_roc else infor
+        # printlabels.insert(0,'Class')
+        iou_list = np.round(class_iou, 5).tolist()
+        iou_list.insert(0,'IoU')
+        acc_list = np.round(class_precision, 5).tolist()
+        acc_list.insert(0,'Acc')
+        recall_list = np.round(class_recall, 5).tolist()
+        recall_list.insert(0,'Recall')
+        max_width = max(max(len(str(x)) for x in printlabels), max(len(str(y)) for y in iou_list))
+        for x, y,z,w in zip(printlabels, iou_list,acc_list,recall_list):
+            logger.info(f'{x:<{max_width}} {y:<{max_width}} {z:<{max_width}} {w:<{max_width}}')
+        logger.info('------------')
         logger.info(infor)
-        logger.info("[EVAL] Class IoU: \n" + str(np.round(class_iou, 4)))
-        logger.info("[EVAL] Class Precision: \n" + str(
-            np.round(class_precision, 4)))
-        logger.info("[EVAL] Class Recall: \n" + str(np.round(class_recall, 4)))
+        logger.info('---------------------------------------------------------------------------------')
+
+    # if print_detail:
+    #     logger.info('----------------------------------iou-----------------------------------------------')
+    #     infor = "[EVAL] #Images: {} 【mIoU】: {:.4f} 【mAcc】: {:.4f} 【recall】: {:.4f} ".format(
+    #         len(eval_dataset), miou, np.average(class_precision),np.average(class_precision))
+    #     infor = infor + auc_infor if auc_roc else infor
+    #     # logger.info(infor)
+    #     logger.info("[EVAL] Class IoU:" )
+    #     iou_list=np.round(class_iou, 5).tolist()
+    #     max_width = max(max(len(str(x)) for x in printlabels), max(len(str(y)) for y in iou_list))
+    #     for x, y in zip(printlabels, iou_list):
+    #         logger.info(f'{x:<{max_width}} {y:<{max_width}}')
+    #     logger.info('----------------------------------acc-----------------------------------------------')
+    #     logger.info("[EVAL] Class Precision:" )
+    #     acc_list = np.round(class_precision, 5).tolist()
+    #     for x, y in zip(printlabels, acc_list):
+    #         logger.info(f'{x:<{max_width}} {y:<{max_width}}')
+    #     logger.info('----------------------------------recall-----------------------------------------------')
+    #     logger.info("[EVAL] Class Recall:" )
+    #     recall_list = np.round(class_recall, 5).tolist()
+    #     for x, y in zip(printlabels, recall_list):
+    #         logger.info(f'{x:<{max_width}} {y:<{max_width}}')
+    #     logger.info('---------------------------------------------------------------------------------')
+    #     logger.info(infor)
     return miou, acc, class_iou, class_precision, kappa

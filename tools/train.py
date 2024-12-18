@@ -35,7 +35,8 @@ def parse_args():
     parser.add_argument("--config", default='..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
-    parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)
+    parser.add_argument("--precision",default="fp16",choices=["fp32", "fp16"],)
+    parser.add_argument("--printlabels", default=['background', 'QPZZ', 'MDBD', 'MNYW', 'WW', 'LMPS', 'BMQQ', 'LMHH', 'KTAK'] )
 
 
     #以下是无需修改参数，内部已修改，外部无需修改---------------------------------------------------------------------
@@ -211,7 +212,8 @@ def main(args):
           print_mem_info=print_mem_info,
           shuffle=shuffle,
           uniform_output_enabled=uniform_output_enabled,
-          cli_args=None if not uniform_output_enabled else args)
+          cli_args=None if not uniform_output_enabled else args,
+          printlabels=args.printlabels)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-batch_size: 12  # total: 4*6
+batch_size: 16  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 150
 
@@ -10,16 +10,16 @@ train_dataset:
   train_path: ..\..\BlueFaceDataX2_PP\train.txt
   transforms:
     - type: ResizeStepScaling
-      min_scale_factor: 0.5
-      max_scale_factor: 2.5
-      scale_step_size: 0.25
+      min_scale_factor: 0.75
+      max_scale_factor: 1.25
+      scale_step_size: 0.1
     - type: RandomPaddingCrop
-      crop_size: [384, 384]
+      crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomDistort
-      brightness_range: 0.5
-      contrast_range: 0.5
-      saturation_range: 0.5
+      brightness_range: 0.4
+      contrast_range: 0.4
+      saturation_range: 0.4
     - type: Normalize
 
 val_dataset:
