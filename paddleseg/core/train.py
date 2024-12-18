@@ -308,7 +308,7 @@ def train(model,
                     avg_loss_list[i] += float(loss_list[i])
             batch_cost_averager.record(time.time() - batch_start,
                                        num_samples=batch_size)
-
+            epoch_now = (iter - 1) // iters_per_epoch + 1
             if (iter) % log_iters == 0:
                 avg_loss /= log_iters
                 avg_loss_list = [l / log_iters for l in avg_loss_list]
@@ -328,7 +328,7 @@ def train(model,
                 #             avg_train_reader_cost,
                 #             batch_cost_averager.get_ips_average(),
                 #             max_mem_reserved_str, max_mem_allocated_str, eta))
-                epoch_now=(iter - 1) // iters_per_epoch + 1
+                # epoch_now=(iter - 1) // iters_per_epoch + 1
                 logger.info("[TRAIN] epoch: {}/{}, iter: {}/{}, loss: {:.4f}, lr: {:.6f},| ETA {}".format(epoch_now,max_epoch, (iter-(epoch_now-1)*iters_per_epoch)+(iters_per_epoch-log_iters*10)*(epoch_now-1), iters_per_epoch,avg_loss, lr,  eta))
 
                 if use_vdl:
@@ -422,7 +422,8 @@ def train(model,
                     if mean_iou > best_mean_iou:
                         stop_count = 0
                         best_mean_iou = mean_iou
-                        best_model_iter = iter
+                        # best_model_iter = iter
+                        best_model_epoch= epoch_now
                         best_model_dir = os.path.join(save_dir, "best_model")
                         paddle.save(
                             model.state_dict(),
@@ -448,8 +449,8 @@ def train(model,
                             .format(iter, best_mean_iou))
                     else:
                         logger.info(
-                            '[EVAL] The model with the best validation mIoU ({:.4f}) was saved at iter {}.'
-                            .format(best_mean_iou, best_model_iter))
+                            '[EVAL] The model with the best validation mIoU ({:.4f}) was saved at epoch {}.'
+                            .format(best_mean_iou, best_model_epoch))
 
                     if use_ema:
                         ema_states_dict = {
