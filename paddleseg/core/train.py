@@ -30,6 +30,7 @@ from paddleseg.utils import (TimeAverager, calculate_eta, resume,
 from paddleseg.core.val import evaluate
 from paddleseg.core.export import export, save_model_info, update_train_results
 from paddleseg.utils.logger import setup_logger
+# import logging
 
 
 def check_logits_losses(logits_list, losses):
@@ -61,6 +62,17 @@ def loss_computation(logits_list, labels, edges, losses):
         else:
             loss_list.append(coef_i * loss_i(logits, labels))
     return loss_list
+
+# def get_log(args):
+#     logger = logging.getLogger()
+#     logger.setLevel(logging.INFO)
+#     stream_handerler = logging.StreamHandler()
+#     logger.addHandler(stream_handerler)
+#     file_hander = logging.FileHandler('train.log')
+#     logger.addHandler(file_hander)
+#     logger.info(args)
+#     return logger
+
 
 
 def train(model,
@@ -173,7 +185,9 @@ def train(model,
 
     if use_vdl:
         from visualdl import LogWriter
-        log_writer = LogWriter(save_dir)
+        if not os.path.exists(os.path.join(save_dir,'log')):
+            os.makedirs(os.path.join(save_dir,'log'))
+        log_writer = LogWriter(os.path.join(save_dir,'log'))
 
     if to_static_training:
         model = paddle.jit.to_static(model)
@@ -192,7 +206,9 @@ def train(model,
     batch_start = time.time()
     iter = start_iter
 
-    iters=iters_per_epoch*max_epoch
+    iters=iters_per_epoch*max_epoch   #将迭代次数修改为依据epochs来计算
+    save_interval=iters_per_epoch     #训练完一个epoch 测试一次
+    log_iters = max(iters_per_epoch // 10,1) #每一个epoch只展示10条训练结果
     while iter < iters and not stop_status:
         if iter == start_iter and use_ema:
             init_ema_params(ema_model, model)
@@ -298,20 +314,23 @@ def train(model,
                 avg_loss_list = [l / log_iters for l in avg_loss_list]
                 remain_iters = iters - iter
                 avg_train_batch_cost = batch_cost_averager.get_average()
-                avg_train_reader_cost = reader_cost_averager.get_average()
+                # avg_train_reader_cost = reader_cost_averager.get_average()
                 eta = calculate_eta(remain_iters, avg_train_batch_cost)
-                max_mem_reserved_str = ""
-                max_mem_allocated_str = ""
-                if paddle.device.is_compiled_with_cuda() and print_mem_info:
-                    max_mem_reserved_str = f", max_mem_reserved: {paddle.device.cuda.max_memory_reserved() // (1024 ** 2)} MB"
-                    max_mem_allocated_str = f", max_mem_allocated: {paddle.device.cuda.max_memory_allocated() // (1024 ** 2)} MB"
-                logger.info(
-                    "[TRAIN] epoch: {}, iter: {}/{}, loss: {:.4f}, lr: {:.6f}, batch_cost: {:.4f}, reader_cost: {:.5f}, ips: {:.4f} samples/sec{}{} | ETA {}"
-                    .format((iter - 1) // iters_per_epoch + 1, iter, iters,
-                            avg_loss, lr, avg_train_batch_cost,
-                            avg_train_reader_cost,
-                            batch_cost_averager.get_ips_average(),
-                            max_mem_reserved_str, max_mem_allocated_str, eta))
+                # max_mem_reserved_str = ""
+                # max_mem_allocated_str = ""
+                # if paddle.device.is_compiled_with_cuda() and print_mem_info:
+                    # max_mem_reserved_str = f", max_mem_reserved: {paddle.device.cuda.max_memory_reserved() // (1024 ** 2)} MB"
+                    # max_mem_allocated_str = f", max_mem_allocated: {paddle.device.cuda.max_memory_allocated() // (1024 ** 2)} MB"
+                # logger.info(
+                #     "[TRAIN] epoch: {}, iter: {}/{}, loss: {:.4f}, lr: {:.6f}, batch_cost: {:.4f}, reader_cost: {:.5f}, ips: {:.4f} samples/sec{}{} | ETA {}"
+                #     .format((iter - 1) // iters_per_epoch + 1, iter, iters,
+                #             avg_loss, lr, avg_train_batch_cost,
+                #             avg_train_reader_cost,
+                #             batch_cost_averager.get_ips_average(),
+                #             max_mem_reserved_str, max_mem_allocated_str, eta))
+                epoch_now=(iter - 1) // iters_per_epoch + 1
+                logger.info("[TRAIN] epoch: {}/{}, iter: {}/{}, loss: {:.4f}, lr: {:.6f},| ETA {}".format(epoch_now,max_epoch, (iter-(epoch_now-1)*iters_per_epoch)+(iters_per_epoch-log_iters*10)*(epoch_now-1), iters_per_epoch,avg_loss, lr,  eta))
+
                 if use_vdl:
                     log_writer.add_scalar('Train/loss', avg_loss, iter)
                     # Record all losses if there are more than 2 losses.
@@ -324,10 +343,10 @@ def train(model,
                             log_writer.add_scalar(log_tag, value, iter)
 
                     log_writer.add_scalar('Train/lr', lr, iter)
-                    log_writer.add_scalar('Train/batch_cost',
-                                          avg_train_batch_cost, iter)
-                    log_writer.add_scalar('Train/reader_cost',
-                                          avg_train_reader_cost, iter)
+                    # log_writer.add_scalar('Train/batch_cost',
+                    #                       avg_train_batch_cost, iter)
+                    # log_writer.add_scalar('Train/reader_cost',
+                    #                       avg_train_reader_cost, iter)
                 avg_loss = 0.0
                 avg_loss_list = []
                 reader_cost_averager.reset()
@@ -348,6 +367,7 @@ def train(model,
                                                   num_workers=num_workers,
                                                   precision=precision,
                                                   amp_level=amp_level,
+                                                  logger=logger,
                                                   **test_config)
 
                 if use_ema:
@@ -362,42 +382,42 @@ def train(model,
                 model.train()
 
             if (iter % save_interval == 0 or iter == iters) and local_rank == 0:
-                current_save_dir = os.path.join(save_dir,
-                                                "iter_{}".format(iter))
-                if not os.path.isdir(current_save_dir):
-                    os.makedirs(current_save_dir)
-                paddle.save(model.state_dict(),
-                            os.path.join(current_save_dir, 'model.pdparams'))
-                paddle.save(optimizer.state_dict(),
-                            os.path.join(current_save_dir, 'model.pdopt'))
-                if uniform_output_enabled:
-                    export(cli_args, model, current_save_dir)
-                    gc.collect()
-
-                if use_ema:
-                    paddle.save(
-                        ema_model.state_dict(),
-                        os.path.join(current_save_dir, 'ema_model.pdparams'))
-                    if uniform_output_enabled:
-                        export(cli_args, ema_model, current_save_dir, use_ema)
-                        gc.collect()
-
-                save_models.append(current_save_dir)
+                # current_save_dir = os.path.join(save_dir,
+                #                                 "iter_{}".format(iter))
+                # if not os.path.isdir(current_save_dir):
+                #     os.makedirs(current_save_dir)
+                # paddle.save(model.state_dict(),
+                #             os.path.join(current_save_dir, 'model.pdparams'))
+                # paddle.save(optimizer.state_dict(),
+                #             os.path.join(current_save_dir, 'model.pdopt'))
+                # if uniform_output_enabled:
+                #     export(cli_args, model, current_save_dir)
+                #     gc.collect()
+                #
+                # if use_ema:
+                #     paddle.save(
+                #         ema_model.state_dict(),
+                #         os.path.join(current_save_dir, 'ema_model.pdparams'))
+                #     if uniform_output_enabled:
+                #         export(cli_args, ema_model, current_save_dir, use_ema)
+                #         gc.collect()
+                #
+                # save_models.append(current_save_dir)
                 if len(save_models) > keep_checkpoint_max > 0:
                     model_to_remove = save_models.popleft()
                     shutil.rmtree(model_to_remove)
 
                 if val_dataset is not None:
                     states_dict = {'mIoU': mean_iou, 'Acc': acc, 'iter': iter}
-                    paddle.save(
-                        states_dict,
-                        os.path.join(current_save_dir, 'model.pdstates'))
-                    if uniform_output_enabled:
-                        save_model_info(states_dict, current_save_dir)
-                        update_train_results(cli_args,
-                                             "iter_{}".format(iter),
-                                             states_dict,
-                                             done_flag=iter == iters)
+                    # paddle.save(
+                    #     states_dict,
+                    #     os.path.join(current_save_dir, 'model.pdstates'))
+                    # if uniform_output_enabled:
+                    #     save_model_info(states_dict, current_save_dir)
+                    #     update_train_results(cli_args,
+                    #                          "iter_{}".format(iter),
+                    #                          states_dict,
+                    #                          done_flag=iter == iters)
 
                     if mean_iou > best_mean_iou:
                         stop_count = 0
@@ -437,10 +457,10 @@ def train(model,
                             'Acc': ema_acc,
                             'iter': iter
                         }
-                        paddle.save(
-                            ema_states_dict,
-                            os.path.join(current_save_dir,
-                                         'ema_model.pdstates'))
+                        # paddle.save(
+                        #     ema_states_dict,
+                        #     os.path.join(current_save_dir,
+                        #                  'ema_model.pdstates'))
 
                         if ema_mean_iou > best_ema_mean_iou:
                             best_ema_mean_iou = ema_mean_iou

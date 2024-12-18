@@ -32,61 +32,22 @@ def parse_args():
 
     # Common params
     parser.add_argument("--config", default='..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
-    parser.add_argument('--device',
-                        help='Set the device place for training model.',
-                        default='gpu',
-                        choices=['cpu', 'gpu', 'xpu', 'npu', 'mlu'],
-                        type=str)
+    parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
+    parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)
+
+
+    #以下是无需修改参数，内部已修改，外部无需修改---------------------------------------------------------------------
     parser.add_argument('--num_workers',default=0)
-    # parser.add_argument('--do_eval',
-    #                     help='Whether to do evaluation in training.',
-    #                     action='store_true')
     parser.add_argument('--do_eval',default=True)
     parser.add_argument('--use_vdl',default=True)
     parser.add_argument('--use_ema',default=False)
-
-    # Runntime params
-    parser.add_argument('--resume_model',
-                        help='The path of the model to resume training.',
-                        type=str)
     parser.add_argument('--iters', help='Iterations in training.', type=int)
-    parser.add_argument('--batch_size',
-                        help='Mini batch size of one gpu or cpu. ',
-                        type=int)
+    parser.add_argument('--batch_size',help='Mini batch size of one gpu or cpu. ',type=int)
     parser.add_argument('--learning_rate', help='Learning rate.', type=float)
-    parser.add_argument(
-        '--save_interval',
-        help='How many iters to save a model snapshot once during training.',
-        type=int,
-        default=100)
-    parser.add_argument(
-        '--log_iters',
-        help='Display logging information at every `log_iters`.',
-        default=10,
-        type=int)
-    parser.add_argument('--keep_checkpoint_max',
-                        help='Maximum number of checkpoints to save.',
-                        type=int,
-                        default=5)
-    parser.add_argument('--early_stop_intervals',
-                        help='Early Stop at args number of save intervals.',
-                        type=int,
-                        default=None)
-
-    # Other params
-    parser.add_argument('--seed',
-                        help='Set the random seed in training.',
-                        default=None,
-                        type=int)
-    parser.add_argument(
-        "--precision",
-        default="fp32",
-        type=str,
-        choices=["fp32", "fp16"],
-        help=
-        "Use AMP (Auto mixed precision) if precision='fp16'. If precision='fp32', the training is normal."
-    )
+    parser.add_argument('--save_interval',help='How many iters to save a model snapshot once during training.',type=int,default=50)
+    parser.add_argument('--log_iters',help='Display logging information at every `log_iters`.',default=10,type=int)
+    parser.add_argument('--seed',help='Set the random seed in training.',default=42,type=int)
     parser.add_argument(
         "--amp_level",
         default="O1",
@@ -118,6 +79,29 @@ def parse_args():
     parser.add_argument('--opts',
                         help='Update the key-value pairs of all options.',
                         nargs='+')
+
+    # Runntime params
+    parser.add_argument('--resume_model',
+                        help='The path of the model to resume training.',
+                        type=str)
+
+    parser.add_argument('--keep_checkpoint_max',
+                        help='Maximum number of checkpoints to save.',
+                        type=int,
+                        default=5)
+    parser.add_argument('--early_stop_intervals',
+                        help='Early Stop at args number of save intervals.',
+                        type=int,
+                        default=None)
+    parser.add_argument(
+        '--output_op',
+        choices=['argmax', 'softmax', 'none'],
+        default="argmax",
+        help=
+        "Select the op to be appended to the last of inference model, default: argmax."
+        "In PaddleSeg, the output of trained model is logit (H*C*H*W). We can apply argmax and"
+        "softmax op to the logit according the actual situation.")
+
     # Set multi-label mode
     parser.add_argument(
         '--use_multilabel',
@@ -128,14 +112,6 @@ def parse_args():
                         action='store_true',
                         default=None,
                         help='Whether to enable to_static in training')
-    parser.add_argument(
-        '--output_op',
-        choices=['argmax', 'softmax', 'none'],
-        default="argmax",
-        help=
-        "Select the op to be appended to the last of inference model, default: argmax."
-        "In PaddleSeg, the output of trained model is logit (H*C*H*W). We can apply argmax and"
-        "softmax op to the logit according the actual situation.")
     parser.add_argument(
         "--input_shape",
         nargs='+',
@@ -206,7 +182,7 @@ def main(args):
     val_dataset = builder.val_dataset if args.do_eval else None
     optimizer = builder.optimizer
     loss = builder.loss
-    logger = setup_logger(log_ranks=log_ranks)
+    logger = setup_logger(log_ranks=log_ranks,log_file='./train.log')
     train(model,
           train_dataset,
           val_dataset=val_dataset,

@@ -1,0 +1,27 @@
+[2024/12/18 14:41:06] INFO: [TRAIN] epoch: 1/150, iter: 5/50, loss: 6.5474, lr: 0.000010,| ETA 03:01:04
+[2024/12/18 14:41:12] INFO: [TRAIN] epoch: 1/150, iter: 10/50, loss: 6.4221, lr: 0.000011,| ETA 02:21:11
+[2024/12/18 14:41:17] INFO: [TRAIN] epoch: 1/150, iter: 15/50, loss: 6.1746, lr: 0.000011,| ETA 02:20:45
+[2024/12/18 14:41:28] INFO: [TRAIN] epoch: 1/150, iter: 20/50, loss: 6.0782, lr: 0.000012,| ETA 04:34:15
+[2024/12/18 14:41:40] INFO: [TRAIN] epoch: 1/150, iter: 25/50, loss: 5.9478, lr: 0.000012,| ETA 04:59:53
+[2024/12/18 14:41:56] INFO: [TRAIN] epoch: 1/150, iter: 30/50, loss: 5.9849, lr: 0.000013,| ETA 06:31:27
+[2024/12/18 14:42:16] INFO: [TRAIN] epoch: 1/150, iter: 35/50, loss: 5.7489, lr: 0.000013,| ETA 08:23:57
+[2024/12/18 14:42:28] INFO: [TRAIN] epoch: 1/150, iter: 40/50, loss: 5.7393, lr: 0.000014,| ETA 04:43:29
+[2024/12/18 14:42:38] INFO: [TRAIN] epoch: 1/150, iter: 45/50, loss: 5.6311, lr: 0.000014,| ETA 04:26:27
+[2024/12/18 14:42:49] INFO: [TRAIN] epoch: 1/150, iter: 50/50, loss: 5.4015, lr: 0.000014,| ETA 04:23:36
+[2024/12/18 14:42:49] INFO: Start evaluating (total_samples: 685, total_iters: 685)...
+[2024/12/18 14:43:21] INFO: [EVAL] #Images: 685 mIoU: 0.0638 Acc: 0.4771 Kappa: 0.0269 Dice: 0.0912
+[2024/12/18 14:43:21] INFO: [EVAL] Class IoU: 
+[0.4894 0.0288 0.0032 0.0029 0.0469 0.0001 0.0006 0.0008 0.0013]
+[2024/12/18 14:43:21] INFO: [EVAL] Class Precision: 
+[0.9747 0.0613 0.0043 0.003  0.0514 0.0001 0.0007 0.0008 0.0014]
+[2024/12/18 14:43:21] INFO: [EVAL] Class Recall: 
+[0.4957 0.0514 0.0124 0.1147 0.3457 0.0016 0.0107 0.1259 0.0993]
+[2024/12/18 14:43:21] INFO: [EVAL] The model with the best validation mIoU (0.0638) was saved at iter 50.
+[2024/12/18 14:43:29] INFO: [TRAIN] epoch: 2/150, iter: 5/50, loss: 5.3113, lr: 0.000015,| ETA 03:24:20
+[2024/12/18 14:43:37] INFO: [TRAIN] epoch: 2/150, iter: 10/50, loss: 5.2463, lr: 0.000015,| ETA 03:19:22
+[2024/12/18 14:43:45] INFO: [TRAIN] epoch: 2/150, iter: 15/50, loss: 4.9670, lr: 0.000016,| ETA 03:13:02
+[2024/12/18 14:43:52] INFO: [TRAIN] epoch: 2/150, iter: 20/50, loss: 5.1240, lr: 0.000016,| ETA 03:03:53
+[2024/12/18 14:43:59] INFO: [TRAIN] epoch: 2/150, iter: 25/50, loss: 4.8907, lr: 0.000017,| ETA 02:46:21
+[2024/12/18 14:44:07] INFO: [TRAIN] epoch: 2/150, iter: 30/50, loss: 4.8029, lr: 0.000017,| ETA 03:15:41
+[2024/12/18 14:44:15] INFO: [TRAIN] epoch: 2/150, iter: 35/50, loss: 4.8303, lr: 0.000018,| ETA 03:16:30
+[2024/12/18 14:44:22] INFO: [TRAIN] epoch: 2/150, iter: 40/50, loss: 4.6836, lr: 0.000018,| ETA 03:00:15

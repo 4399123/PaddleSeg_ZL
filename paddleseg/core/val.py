@@ -19,7 +19,7 @@ import time
 import paddle
 import paddle.nn.functional as F
 
-from paddleseg.utils import metrics, TimeAverager, calculate_eta, logger, progbar
+from paddleseg.utils import metrics, TimeAverager, calculate_eta, progbar
 from paddleseg.core import infer
 
 np.set_printoptions(suppress=True)
@@ -39,7 +39,8 @@ def evaluate(model,
              num_workers=0,
              print_detail=True,
              auc_roc=False,
-             use_multilabel=False):
+             use_multilabel=False,
+             logger=None):
     """
     Launch evalution.
 
