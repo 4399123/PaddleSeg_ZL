@@ -185,9 +185,9 @@ def train(model,
 
     if use_vdl:
         from visualdl import LogWriter
-        if not os.path.exists(os.path.join(save_dir,'log')):
-            os.makedirs(os.path.join(save_dir,'log'))
-        log_writer = LogWriter(os.path.join(save_dir,'log'))
+        if not os.path.exists(os.path.join(save_dir,'visuallog')):
+            os.makedirs(os.path.join(save_dir,'visuallog'))
+        log_writer = LogWriter(os.path.join(save_dir,'visuallog'))
 
     if to_static_training:
         model = paddle.jit.to_static(model)
@@ -329,7 +329,7 @@ def train(model,
                 #             batch_cost_averager.get_ips_average(),
                 #             max_mem_reserved_str, max_mem_allocated_str, eta))
                 # epoch_now=(iter - 1) // iters_per_epoch + 1
-                logger.info("[TRAIN] epoch: {}/{}, iter: {}/{}, loss: {:.4f}, lr: {:.6f},| ETA {}".format(epoch_now,max_epoch, (iter-(epoch_now-1)*iters_per_epoch)+(iters_per_epoch-log_iters*10)*(epoch_now-1), iters_per_epoch,avg_loss, lr,  eta))
+                logger.info("[TRAIN] epoch: {}/{}, iter: {}/{}, loss: {:.4f}, lr: {:.6f},| ETA {}".format(epoch_now,max_epoch, (iter-(epoch_now-1)*iters_per_epoch), iters_per_epoch,avg_loss, lr,  eta))
 
                 if use_vdl:
                     log_writer.add_scalar('Train/loss', avg_loss, iter)

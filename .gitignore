@@ -1,2 +1,4 @@
 .idea/
 tools/output/
+*.pyc
+paddleseg/utils/env/*

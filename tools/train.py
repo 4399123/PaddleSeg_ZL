@@ -20,6 +20,7 @@ import random
 import paddle
 import numpy as np
 import cv2
+import time
 
 from paddleseg.cvlibs import Config, SegBuilder
 from paddleseg.utils import get_sys_env, utils
@@ -182,7 +183,8 @@ def main(args):
     val_dataset = builder.val_dataset if args.do_eval else None
     optimizer = builder.optimizer
     loss = builder.loss
-    logger = setup_logger(log_ranks=log_ranks,log_file='./train.log')
+    if not os.path.exists(os.path.join(args.save_dir,'res')): os.makedirs(os.path.join(args.save_dir,'res'))
+    logger = setup_logger(log_ranks=log_ranks,log_file=os.path.join(args.save_dir,'res', '{}-{}.log'.format(str(args.config).split(os.path.sep)[-1].split('.')[0], time.strftime('%Y-%m-%d-%H-%M-%S'))))
     train(model,
           train_dataset,
           val_dataset=val_dataset,

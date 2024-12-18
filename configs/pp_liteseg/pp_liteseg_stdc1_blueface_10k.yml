@@ -1,4 +1,4 @@
-batch_size: 20  # total: 4*6
+batch_size: 12  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 150
 
