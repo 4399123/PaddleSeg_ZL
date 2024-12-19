@@ -78,7 +78,9 @@ def loss_computation(logits_list, labels, edges, losses):
 def train(model,
           train_dataset,
           val_dataset=None,
-          optimizer=None,
+          # optimizer=None,
+          lr_scheduler=None,
+          builder=None,
           save_dir='output',
           iters=10000,
           max_epoch=300,
@@ -144,6 +146,16 @@ def train(model,
     nranks = paddle.distributed.ParallelEnv().nranks
     local_rank = paddle.distributed.ParallelEnv().local_rank
 
+    batch_sampler = paddle.io.DistributedBatchSampler(train_dataset,
+                                                      batch_size=batch_size,
+                                                      shuffle=shuffle,
+                                                      drop_last=True)
+    if(lr_scheduler['type']=='CosineAnnealingDecay'):
+        lr_scheduler['T_max']=len(batch_sampler)*max_epoch
+        lr_scheduler['warmup_iters']=5*len(batch_sampler)
+
+    optimizer = builder.optimizer
+
     start_iter = 0
     stop_count = 0
     stop_status = False
@@ -171,18 +183,6 @@ def train(model,
             optimizer)  # The return is Fleet object
         ddp_model = paddle.distributed.fleet.distributed_model(model)
 
-    batch_sampler = paddle.io.DistributedBatchSampler(train_dataset,
-                                                      batch_size=batch_size,
-                                                      shuffle=shuffle,
-                                                      drop_last=True)
-
-    loader = paddle.io.DataLoader(
-        train_dataset,
-        batch_sampler=batch_sampler,
-        num_workers=num_workers,
-        return_list=True,
-        worker_init_fn=worker_init_fn,
-    )
 
     if use_vdl:
         from visualdl import LogWriter
@@ -194,6 +194,13 @@ def train(model,
         model = paddle.jit.to_static(model)
         logger.info("Successfully applied @to_static")
 
+    loader = paddle.io.DataLoader(
+        train_dataset,
+        batch_sampler=batch_sampler,
+        num_workers=num_workers,
+        return_list=True,
+        worker_init_fn=worker_init_fn,
+    )
 
     avg_loss = 0.0
     avg_loss_list = []
@@ -290,6 +297,7 @@ def train(model,
 
             # update lr
             if isinstance(optimizer, paddle.distributed.fleet.Fleet):
+                # optimizer.user_defined_optimizer._learning_rate.T
                 lr_sche = optimizer.user_defined_optimizer._learning_rate
             else:
                 lr_sche = optimizer._learning_rate

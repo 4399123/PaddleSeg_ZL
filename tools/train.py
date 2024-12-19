@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument("--config", default='..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
-    parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)
+    parser.add_argument("--precision",default="fp16",choices=["fp32", "fp16"],)
     parser.add_argument("--printlabels", default=['background', 'QPZZ', 'MDBD', 'MNYW', 'WW', 'LMPS', 'BMQQ', 'LMHH', 'KTAK'] )
 
 
@@ -177,20 +177,21 @@ def main(args):
             cfg.dic['loss']['types'][i]['data_format'] = args.data_format
 
     model = utils.convert_sync_batchnorm(builder.model, args.device)
-
     train_dataset = builder.train_dataset
     # TODO refactor
     if args.repeats > 1:
         train_dataset.file_list *= args.repeats
     val_dataset = builder.val_dataset if args.do_eval else None
-    optimizer = builder.optimizer
+    # optimizer = builder.optimizer
     loss = builder.loss
     if not os.path.exists(os.path.join(args.save_dir,'res')): os.makedirs(os.path.join(args.save_dir,'res'))
     logger = setup_logger(log_ranks=log_ranks,log_file=os.path.join(args.save_dir,'res', '{}-{}.log'.format(str(args.config).split(os.path.sep)[-1].split('.')[0], time.strftime('%Y-%m-%d-%H-%M-%S'))))
     train(model,
           train_dataset,
           val_dataset=val_dataset,
-          optimizer=optimizer,
+          # optimizer=optimizer,
+          lr_scheduler=cfg.dic['lr_scheduler'],
+          builder=builder,
           save_dir=args.save_dir,
           iters=cfg.iters,
           max_epoch=cfg.dic['max_epoch'],

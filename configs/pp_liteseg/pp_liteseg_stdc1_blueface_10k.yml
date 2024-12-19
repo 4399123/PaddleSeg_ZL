@@ -1,6 +1,6 @@
-batch_size: 16  # total: 4*6
+batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 150
+max_epoch: 50
 
 train_dataset:
   type: Dataset
@@ -35,20 +35,20 @@ optimizer:
   type: AdamW
   weight_decay: 1.0e-3
 
-#lr_scheduler:
-#  type: CosineAnnealingDecay
-#  learning_rate: 0.0001
-#  T_max: 300
-#  eta_min: 5.0e-6
-#  warmup_iters: 1000
-#  warmup_start_lr: 0.00001
 lr_scheduler:
-  type: PolynomialDecay
+  type: CosineAnnealingDecay
   learning_rate: 0.0001
-  end_lr: 5.0e-6
-  power: 0.9
-  warmup_iters: 1000
-  warmup_start_lr: 1.0e-5
+#  T_max: 800
+  eta_min: 5.0e-6
+#  warmup_iters: 80
+  warmup_start_lr: 0.00001
+#lr_scheduler:
+#  type: PolynomialDecay
+#  learning_rate: 0.0001
+#  end_lr: 5.0e-6
+#  power: 0.9
+#  warmup_iters: 100
+#  warmup_start_lr: 1.0e-5
 
 loss:
   types:
