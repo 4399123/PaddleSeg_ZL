@@ -24,6 +24,7 @@ import time
 
 from paddleseg.cvlibs import Config, SegBuilder
 from paddleseg.utils import get_sys_env, utils
+# from paddleseg.utils import  utils
 from paddleseg.utils.logger import setup_logger
 from paddleseg.core import train
 
@@ -35,7 +36,7 @@ def parse_args():
     parser.add_argument("--config", default='..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
-    parser.add_argument("--precision",default="fp16",choices=["fp32", "fp16"],)
+    parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)
     parser.add_argument("--printlabels", default=['background', 'QPZZ', 'MDBD', 'MNYW', 'WW', 'LMPS', 'BMQQ', 'LMHH', 'KTAK'] )
 
 
