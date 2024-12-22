@@ -27,10 +27,13 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model prediction')
 
     # Common params
-    parser.add_argument("--config", default=r'..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
-    parser.add_argument('--model_path',default=r'..\deepmodel\model.pdparams')
+    parser.add_argument("--config", help="The path of config file.", type=str)
     parser.add_argument(
-        '--image_path',default=r'./imgs/',
+        '--model_path',
+        help='The path of trained weights for prediction.',
+        type=str)
+    parser.add_argument(
+        '--image_path',
         help='The image to predict, which can be a path of image, or a file list containing image paths, or a directory including images',
         type=str)
     parser.add_argument(
