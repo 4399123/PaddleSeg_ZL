@@ -2,3 +2,5 @@
 tools/output/
 *.pyc
 paddleseg.egg-info/
+tools/imgs/
+deepmodel/
