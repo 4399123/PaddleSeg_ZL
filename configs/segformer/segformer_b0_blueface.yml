@@ -1,0 +1,42 @@
+_base_: '../_base_/blueface.yml'
+
+batch_size: 12  # total: 4*6
+max_epoch: 300
+
+train_dataset:
+  dataset_root: ../../BlueFaceDataX2_PP
+  train_path: ../../BlueFaceDataX2_PP/train.txt
+  num_classes: 9
+  transforms:
+    - type: ResizeStepScaling
+      min_scale_factor: 0.75
+      max_scale_factor: 1.25
+      scale_step_size: 0.05
+    - type: RandomPaddingCrop
+      crop_size: [512, 512]
+
+val_dataset:
+  dataset_root: ../../BlueFaceDataX2_PP
+  val_path: ../../BlueFaceDataX2_PP/val.txt
+  num_classes: 9
+
+lr_scheduler:
+  type: CosineAnnealingDecay
+  learning_rate: 0.0001
+  eta_min: 5.0e-6
+  warmup_start_lr: 0.00005
+
+loss:
+  types:
+    - type: OhemCrossEntropyLoss
+  coef: [1]
+
+
+model:
+  type: SegFormer
+  backbone:
+    type: MixVisionTransformer_B0
+    pretrained: ../premodels/mix_vision_transformer_b0.pdparams
+  embedding_dim: 256
+#  num_classes: 9
+
