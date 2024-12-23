@@ -82,6 +82,8 @@ class OhemCrossEntropyLoss(nn.Layer):
         prob = F.softmax(logit, axis=1)
         prob = prob.transpose((1, 0, 2, 3)).reshape((c, -1))
 
+        self.min_kept= num_valid//16
+
         if self.min_kept < num_valid and num_valid > 0:
             # let the value which ignored greater than 1
             prob = prob + (1 - valid_mask).astype(prob.dtype)

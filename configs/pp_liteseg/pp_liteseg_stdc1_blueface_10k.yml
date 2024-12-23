@@ -1,6 +1,6 @@
-batch_size: 32  # total: 4*6
+batch_size: 48  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 50
+max_epoch: 300
 
 train_dataset:
   type: Dataset
@@ -30,6 +30,8 @@ val_dataset:
   val_path: ..\..\BlueFaceDataX2_PP\val.txt
   transforms:
     - type: Normalize
+      mean: [ 0.46962251, 0.4464104, 0.40718787 ]
+      std: [ 0.27469736, 0.27012361, 0.28515933 ]
 #      mean: [ 0.5, 0.5, 0.5 ]
 #      std: [ 0.5, 0.5, 0.5 ]
 #      mean: [ 0.485, 0.456, 0.406 ]
@@ -56,18 +58,18 @@ lr_scheduler:
 
 loss:
   types:
-    - type: MixedLoss
-      losses:
-        - type: CrossEntropyLoss
-        - type: LovaszSoftmaxLoss
-      coef: [ 0.8, 0.2 ]
-    - type: CrossEntropyLoss
-    - type: CrossEntropyLoss
-#    - type: OhemCrossEntropyLoss
+#    - type: MixedLoss
+#      losses:
+#        - type: CrossEntropyLoss
+#        - type: LovaszSoftmaxLoss
+#      coef: [ 0.8, 0.2 ]
+#    - type: CrossEntropyLoss
+#    - type: CrossEntropyLoss
+    - type: OhemCrossEntropyLoss
 #      min_kept: 250000   # batch_size * 960 * 720 // 16
-#    - type: OhemCrossEntropyLoss
+    - type: OhemCrossEntropyLoss
 #      min_kept: 250000
-#    - type: OhemCrossEntropyLoss
+    - type: OhemCrossEntropyLoss
 #      min_kept: 250000
   coef: [1, 1, 1]
 
