@@ -26,23 +26,10 @@ from paddleseg.core.export import export
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Export Inference Model.')
-    parser.add_argument("--config", help="The path of config file.", type=str)
-    parser.add_argument(
-        '--model_path',
-        help='The path of trained weights for exporting inference model',
-        type=str)
-    parser.add_argument(
-        '--save_dir',
-        help='The directory for saving the exported inference model',
-        type=str,
-        default='./output/inference_model')
-    parser.add_argument(
-        "--input_shape",
-        nargs='+',
-        help=
-        "Export the model with fixed input shape, e.g., `--input_shape 1 3 1024 1024`.",
-        type=int,
-        default=None)
+    parser.add_argument("--config", default='../configs/pp_liteseg/pp_liteseg_stdc1_blueface_10k.yml')
+    parser.add_argument('--model_path', default=r'../deepmodel/model.pdparams')
+    parser.add_argument('--save_dir',default='./onnx/')
+    parser.add_argument("--input_shape",nargs='+',default=[-1,3,512,512])
     parser.add_argument(
         '--output_op',
         choices=['argmax', 'softmax', 'none'],

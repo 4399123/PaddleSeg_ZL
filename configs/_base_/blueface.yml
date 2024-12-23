@@ -1,0 +1,46 @@
+iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
+
+train_dataset:
+  type: Dataset
+  dataset_root: ../../BlueFaceDataX2_PP
+  num_classes: 9
+  train_path: ../../BlueFaceDataX2_PP/train.txt
+  transforms:
+    - type: ResizeStepScaling
+      min_scale_factor: 0.75
+      max_scale_factor: 1.25
+      scale_step_size: 0.05
+    - type: RandomPaddingCrop
+      crop_size: [512, 512]
+    - type: RandomHorizontalFlip
+    - type: RandomVerticalFlip
+    - type: RandomDistort
+      brightness_range: 0.4
+      contrast_range: 0.4
+      saturation_range: 0.4
+    - type: Normalize
+      mean: [ 0.46962251, 0.4464104, 0.40718787 ]
+      std: [ 0.27469736, 0.27012361, 0.28515933 ]
+  mode: train
+
+val_dataset:
+  type: Dataset
+  dataset_root: ../../BlueFaceDataX2_PP
+  num_classes: 9
+  val_path: ../../BlueFaceDataX2_PP/val.txt
+  transforms:
+    - type: Normalize
+      mean: [ 0.46962251, 0.4464104, 0.40718787 ]
+      std: [ 0.27469736, 0.27012361, 0.28515933 ]
+  mode: val
+
+
+optimizer:
+  type: AdamW
+  weight_decay: 1.0e-3
+
+lr_scheduler:
+  type: PolynomialDecay
+  learning_rate: 0.01
+
+

@@ -28,6 +28,7 @@ class WrappedModel(paddle.nn.Layer):
         for out in outs:
             if self.output_op == 'argmax':
                 out = paddle.argmax(out, axis=1, dtype='int32')
+                out =paddle.cast(out, dtype='float32')
             elif self.output_op == 'softmax':
                 out = paddle.nn.functional.softmax(out, axis=1)
             new_outs.append(out)

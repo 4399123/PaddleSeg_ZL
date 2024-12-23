@@ -1,0 +1,2 @@
+
+paddle2onnx --model_dir tools  --model_filename onnx/model.pdmodel  --params_filename onnx/model.pdiparams  --opset_version 11 --save_file tools/onnx/best.onnx

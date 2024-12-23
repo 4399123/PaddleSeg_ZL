@@ -4,3 +4,4 @@ tools/output/
 paddleseg.egg-info/
 deepmodel/
 tools/imgs/
+tools/onnx/
