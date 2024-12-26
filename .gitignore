@@ -5,3 +5,7 @@ paddleseg.egg-info/
 deepmodel/
 tools/imgs/
 tools/onnx/
+premodels/rtformer_slim_backbone.pdparams
+premodels/pidnet_small_imagenet1k.pdparams
+premodels/seaformer_tiny_imagenet_pretrained.pdparams
+premodels/topformer_tiny.pdparams

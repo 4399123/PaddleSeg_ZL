@@ -47,25 +47,17 @@ lr_scheduler:
 loss:
   types:
     - type: OhemCrossEntropyLoss
-#    - type: MixedLoss
-#      losses:
-#        - type: CrossEntropyLoss
-#        - type: LovaszSoftmaxLoss
-#      coef: [0.8, 0.2]
   coef: [1]
 
-
 model:
-  type: PPMobileSeg
+  type: SeaFormerSeg
+  backbone: 
+    type: SeaFormer_tiny
+    pretrained: ../premodels/seaformer_tiny_imagenet_pretrained.pdparams
   num_classes: 9
-  backbone:
-    type: MobileSeg_Tiny
-    inj_type: AAM
-    out_feat_chs: [32, 64, 128]
-    pretrained: ../premodels/pp_mobileseg_tiny.pdparams
-#  upsample: vim  # During exportation, you need to change it to vim for using VIM
-  upsample: intepolate  # During exportation, you need to change it to vim for using VIM
-
-
-
-
+  head_channels: 96
+  embed_dims: [64, 96]
+  is_dw: True
+  dropout_ratio: 0.1
+  align_corners: False
+  input_transform: 'multiple_select'

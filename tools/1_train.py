@@ -33,9 +33,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training')
 
     # Common params
-    parser.add_argument("--config", default='../configs/pp_liteseg/pp_liteseg_stdc1_blueface_10k.yml')
-    # parser.add_argument("--config", default='../configs/segformer/segformer_b0_blueface.yml')
-    # parser.add_argument("--config", default='../configs/pp_mobileseg/pp_mobileseg_tiny_blueface.yml')
+    parser.add_argument("--config", default='../configs/rtformer/rtformer_slim_blueface.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
     parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)

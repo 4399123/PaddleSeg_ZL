@@ -47,25 +47,12 @@ lr_scheduler:
 loss:
   types:
     - type: OhemCrossEntropyLoss
-#    - type: MixedLoss
-#      losses:
-#        - type: CrossEntropyLoss
-#        - type: LovaszSoftmaxLoss
-#      coef: [0.8, 0.2]
   coef: [1]
 
-
 model:
-  type: PPMobileSeg
-  num_classes: 9
+  type: TopFormer
+  head_use_dw: True
   backbone:
-    type: MobileSeg_Tiny
-    inj_type: AAM
-    out_feat_chs: [32, 64, 128]
-    pretrained: ../premodels/pp_mobileseg_tiny.pdparams
-#  upsample: vim  # During exportation, you need to change it to vim for using VIM
-  upsample: intepolate  # During exportation, you need to change it to vim for using VIM
-
-
-
-
+    type: TopTransformer_Tiny
+    lr_mult: 0.1
+    pretrained: ../premodels/topformer_tiny.pdparams
