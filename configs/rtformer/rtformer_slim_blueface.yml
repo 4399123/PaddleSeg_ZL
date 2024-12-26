@@ -49,8 +49,8 @@ lr_scheduler:
 loss:
   types:
     - type: OhemCrossEntropyLoss
-#    - type: OhemCrossEntropyLoss
-  coef: [1]
+    - type: OhemCrossEntropyLoss
+  coef: [1,0.4]
 
 model:
   type: RTFormer

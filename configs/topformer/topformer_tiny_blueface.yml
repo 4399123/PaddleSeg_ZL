@@ -54,5 +54,5 @@ model:
   head_use_dw: True
   backbone:
     type: TopTransformer_Tiny
-    lr_mult: 0.1
+#    lr_mult: 0.1
     pretrained: ../premodels/topformer_tiny.pdparams
