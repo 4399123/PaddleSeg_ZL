@@ -27,8 +27,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model prediction')
 
     # Common params
-    parser.add_argument("--config", default=r'..\configs\pp_liteseg\pp_liteseg_stdc1_blueface_10k.yml')
-    parser.add_argument('--model_path',default=r'..\deepmodel\model.pdparams')
+    parser.add_argument("--config", default=r'../configs/pidnet/pidnet_small_blueface.yml')
+    parser.add_argument('--model_path',default=r'..\deepmodel\pidnet\model.pdparams')
     parser.add_argument(
         '--image_path',default=r'./imgs/',
         help='The image to predict, which can be a path of image, or a file list containing image paths, or a directory including images',

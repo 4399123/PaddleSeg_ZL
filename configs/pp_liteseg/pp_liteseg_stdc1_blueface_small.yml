@@ -1,0 +1,66 @@
+iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
+
+batch_size: 12  # total: 4*6
+max_epoch: 400
+num_classes: &num_classes 9
+dataset_root: &dataset_root ../../BlueFaceDataX2_PP
+train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
+val_path: &val_path ../../BlueFaceDataX2_PP/val.txt
+
+train_dataset:
+  type: Dataset
+  dataset_root: *dataset_root
+  num_classes: *num_classes
+  mode: train
+  train_path: *train_path
+  transforms:
+    - type: ResizeStepScaling
+      min_scale_factor: 0.75
+      max_scale_factor: 1.25
+      scale_step_size: 0.05
+    - type: RandomPaddingCrop
+      crop_size: [224, 224]
+    - type: RandomHorizontalFlip
+    - type: RandomVerticalFlip
+    - type: RandomDistort
+      brightness_range: 0.4
+      contrast_range: 0.4
+      saturation_range: 0.4
+    - type: Normalize
+
+val_dataset:
+  type: Dataset
+  dataset_root: *dataset_root
+  num_classes: *num_classes
+  mode: val
+  val_path: *val_path
+  transforms:
+    - type: Normalize
+      mean: [ 0.46962251, 0.4464104, 0.40718787 ]
+      std: [ 0.27469736, 0.27012361, 0.28515933 ]
+
+
+optimizer:
+  type: AdamW
+  weight_decay: 1.0e-3
+
+lr_scheduler:
+  type: CosineAnnealingDecay
+  learning_rate: 0.0002
+  eta_min: 5.0e-6
+  warmup_start_lr: 0.0001
+
+loss:
+  types:
+    - type: OhemCrossEntropyLoss
+    - type: OhemCrossEntropyLoss
+    - type: OhemCrossEntropyLoss
+  coef: [1, 1, 1]
+
+model:
+  type: PPLiteSeg
+  backbone:
+    type: STDC1
+    pretrained: ../premodels/PP_STDCNet1.pdparams
+  arm_out_chs: [24, 32, 64]
+  seg_head_inter_chs: [24, 48, 48]
