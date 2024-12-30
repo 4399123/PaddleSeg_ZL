@@ -26,8 +26,8 @@ from paddleseg.core.export import export
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Export Inference Model.')
-    parser.add_argument("--config", default='../configs/seaformer/seaformer_base_blueface.yml')
-    parser.add_argument('--model_path', default=r'../deepmodel/seaformer_base/model.pdparams')
+    parser.add_argument("--config", default='../configs/pp_liteseg/pp_liteseg_stdc1_blueface_small_p.yml')
+    parser.add_argument('--model_path', default=r'../deepmodel/pp_liteseg_small_p/model.pdparams')
     parser.add_argument('--save_dir',default='./onnx/')
     parser.add_argument("--input_shape",nargs='+',default=[-1,3,512,512])
     parser.add_argument(

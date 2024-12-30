@@ -27,6 +27,8 @@ train_dataset:
       contrast_range: 0.4
       saturation_range: 0.4
     - type: Normalize
+      mean: [ 0.46962251, 0.4464104, 0.40718787 ]
+      std: [ 0.27469736, 0.27012361, 0.28515933 ]
 
 val_dataset:
   type: Dataset
