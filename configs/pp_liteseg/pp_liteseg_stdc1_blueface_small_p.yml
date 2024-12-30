@@ -1,15 +1,19 @@
-batch_size: 16  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 400
+
+batch_size: 32  # total: 4*6
+max_epoch: 300
+num_classes: &num_classes 9
+dataset_root: &dataset_root ../../BlueFaceDataX2_PP
+train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
+val_path: &val_path ../../BlueFaceDataX2_PP/val.txt
 
 train_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: train
-  train_path: ../../BlueFaceDataX2_PP/train.txt
+  train_path: *train_path
   transforms:
-    - type: AddEdgeLabel
     - type: ResizeStepScaling
       min_scale_factor: 0.75
       max_scale_factor: 1.25
@@ -26,14 +30,15 @@ train_dataset:
 
 val_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: val
-  val_path: ../../BlueFaceDataX2_PP/val.txt
+  val_path: *val_path
   transforms:
     - type: Normalize
       mean: [ 0.46962251, 0.4464104, 0.40718787 ]
       std: [ 0.27469736, 0.27012361, 0.28515933 ]
+
 
 optimizer:
   type: AdamW
@@ -47,21 +52,15 @@ lr_scheduler:
 
 loss:
   types:
-    - type: CrossEntropyLoss
-      avg_non_ignore: False
     - type: OhemCrossEntropyLoss
-      thresh: 0.9
-    - type: BCELoss
-      weight: dynamic
-      edge_label: True
     - type: OhemCrossEntropyLoss
-      thresh: 0.9
-  coef: [0.4, 1.0, 10.0, 1.0]
+    - type: OhemCrossEntropyLoss
+  coef: [1, 1, 1]
 
 model:
-  type: PIDNet
-  num_classes: 9
-  head_channels: 128
+  type: PPLiteSeg
   backbone:
-    type: PIDNet_Small
-  pretrained: ../premodels/pidnet_small_imagenet1k.pdparams
+    type: STDC1
+    pretrained: ../premodels/PP_STDCNet1.pdparams
+  arm_out_chs: [24, 24, 48]
+  seg_head_inter_chs: [16, 32, 32]

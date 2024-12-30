@@ -1,6 +1,6 @@
-batch_size: 16  # total: 4*6
+batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 400
+max_epoch: 300
 
 train_dataset:
   type: Dataset
@@ -9,7 +9,6 @@ train_dataset:
   mode: train
   train_path: ../../BlueFaceDataX2_PP/train.txt
   transforms:
-    - type: AddEdgeLabel
     - type: ResizeStepScaling
       min_scale_factor: 0.75
       max_scale_factor: 1.25
@@ -47,21 +46,26 @@ lr_scheduler:
 
 loss:
   types:
-    - type: CrossEntropyLoss
-      avg_non_ignore: False
     - type: OhemCrossEntropyLoss
-      thresh: 0.9
-    - type: BCELoss
-      weight: dynamic
-      edge_label: True
-    - type: OhemCrossEntropyLoss
-      thresh: 0.9
-  coef: [0.4, 1.0, 10.0, 1.0]
+#    - type: MixedLoss
+#      losses:
+#        - type: CrossEntropyLoss
+#        - type: LovaszSoftmaxLoss
+#      coef: [0.8, 0.2]
+  coef: [1]
+
 
 model:
-  type: PIDNet
+  type: PPMobileSeg
   num_classes: 9
-  head_channels: 128
   backbone:
-    type: PIDNet_Small
-  pretrained: ../premodels/pidnet_small_imagenet1k.pdparams
+    type: MobileSeg_Base
+    inj_type: AAMSx8
+    out_feat_chs: [64, 128, 192]
+    pretrained: ../premodels/pp_mobileseg_base.pdparams
+  upsample: vim  # During exportation, you need to change it to vim for using VIM
+#  upsample: intepolate  # During exportation, you need to change it to vim for using VIM
+
+
+
+

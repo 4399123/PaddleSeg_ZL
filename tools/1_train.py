@@ -33,10 +33,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training')
 
     # Common params
-    parser.add_argument("--config", default='../configs/pidnet/pidnet_small_blueface.yml')
+    parser.add_argument("--config", default='../configs/pp_liteseg/pp_liteseg_stdc1_blueface_small.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
-    parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)
+    parser.add_argument("--precision",default="fp16",choices=["fp32", "fp16"],)
     parser.add_argument("--printlabels", default=['background', 'QPZZ', 'MDBD', 'MNYW', 'WW', 'LMPS', 'BMQQ', 'LMHH', 'KTAK'] )
 
 
