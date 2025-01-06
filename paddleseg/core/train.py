@@ -152,7 +152,7 @@ def train(model,
                                                       drop_last=True)
     if(lr_scheduler['type']=='CosineAnnealingDecay'):
         lr_scheduler['T_max']=len(batch_sampler)*max_epoch
-        lr_scheduler['warmup_iters']=5*len(batch_sampler)
+        lr_scheduler['warmup_iters']=2*len(batch_sampler)
 
     optimizer = builder.optimizer
 

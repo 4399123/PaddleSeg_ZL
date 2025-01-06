@@ -1,19 +1,26 @@
-batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 400
+batch_size: 32  # total: 4*6
+max_epoch: 350
+num_classes: &num_classes 9
+dataset_root: &dataset_root ../../BlueFaceDataX2_PP
+train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
+val_path: &val_path ../../BlueFaceDataX2_PP/val.txt
 
 train_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: train
-  train_path: ../../BlueFaceDataX2_PP/train.txt
+  train_path: *train_path
   transforms:
     - type: ResizeStepScaling
       min_scale_factor: 0.75
       max_scale_factor: 1.25
       scale_step_size: 0.05
     - type: RandomPaddingCrop
+      im_padding_value: 0.0
+      label_padding_value: 0
+      loop_times: 2
       crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
@@ -27,14 +34,15 @@ train_dataset:
 
 val_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: val
-  val_path: ../../BlueFaceDataX2_PP/val.txt
+  val_path: *val_path
   transforms:
     - type: Normalize
       mean: [ 0.46962251, 0.4464104, 0.40718787 ]
       std: [ 0.27469736, 0.27012361, 0.28515933 ]
+
 
 optimizer:
   type: AdamW
@@ -49,25 +57,14 @@ lr_scheduler:
 loss:
   types:
     - type: OhemCrossEntropyLoss
-#    - type: MixedLoss
-#      losses:
-#        - type: CrossEntropyLoss
-#        - type: LovaszSoftmaxLoss
-#      coef: [0.8, 0.2]
-  coef: [1]
+    - type: OhemCrossEntropyLoss
+    - type: OhemCrossEntropyLoss
+  coef: [1, 1, 1]
 
 
 model:
-  type: PPMobileSeg
-  num_classes: 9
+#  _inherited_: False  # not inherit the model params from the base yaml
+  type: PPLiteSeg
   backbone:
-    type: MobileSeg_Tiny
-    inj_type: AAM
-    out_feat_chs: [32, 64, 128]
-    pretrained: ../premodels/pp_mobileseg_tiny.pdparams
-#  upsample: vim  # During exportation, you need to change it to vim for using VIM
-  upsample: intepolate  # During exportation, you need to change it to vim for using VIM
-
-
-
-
+    type: STDC2
+    pretrained: ../premodels/PP_STDCNet2.pdparams

@@ -1,6 +1,6 @@
 batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 300
+max_epoch: 350
 
 train_dataset:
   type: Dataset
@@ -14,6 +14,9 @@ train_dataset:
       max_scale_factor: 1.25
       scale_step_size: 0.05
     - type: RandomPaddingCrop
+      im_padding_value: 0.0
+      label_padding_value: 0
+      loop_times: 2
       crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
