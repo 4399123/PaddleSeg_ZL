@@ -33,7 +33,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training')
 
     # Common params
-    parser.add_argument("--config", default='../configs/seaformer/seaformer_tiny_blueface.yml')
+    parser.add_argument("--config", default='../configs/pp_mobileseg/pp_mobileseg_tiny_blueface.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
     parser.add_argument("--precision",default="fp16",choices=["fp32", "fp16"],)
@@ -44,7 +44,7 @@ def parse_args():
     parser.add_argument('--num_workers',default=0)
     parser.add_argument('--do_eval',default=True)
     parser.add_argument('--use_vdl',default=True)
-    parser.add_argument('--use_ema',default=False)
+    parser.add_argument('--use_ema',default=True)
     parser.add_argument('--iters', help='Iterations in training.', type=int)
     parser.add_argument('--batch_size',help='Mini batch size of one gpu or cpu. ',type=int)
     parser.add_argument('--learning_rate', help='Learning rate.', type=float)

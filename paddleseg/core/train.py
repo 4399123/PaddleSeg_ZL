@@ -388,6 +388,8 @@ def train(model,
                         num_workers=num_workers,
                         precision=precision,
                         amp_level=amp_level,
+                        logger=logger,
+                        printlabels=printlabels,
                         **test_config)
 
                 model.train()
@@ -405,13 +407,15 @@ def train(model,
                 #     export(cli_args, model, current_save_dir)
                 #     gc.collect()
                 #
-                # if use_ema:
-                #     paddle.save(
-                #         ema_model.state_dict(),
-                #         os.path.join(current_save_dir, 'ema_model.pdparams'))
-                #     if uniform_output_enabled:
-                #         export(cli_args, ema_model, current_save_dir, use_ema)
-                #         gc.collect()
+                if use_ema:
+                    # if not os.path.exists(os.path.join(save_dir, 'ema_model')):
+                    #     os.makedirs(os.path.join(save_dir, 'ema_model'))
+                    # paddle.save(
+                    #     ema_model.state_dict(),
+                    #     os.path.join(os.path.join(save_dir, 'ema_model'), 'ema_model.pdparams'))
+                    if uniform_output_enabled:
+                        export(cli_args, ema_model, os.path.join(save_dir, 'ema_model'), use_ema)
+                        gc.collect()
                 #
                 # save_models.append(current_save_dir)
                 if len(save_models) > keep_checkpoint_max > 0:
@@ -498,9 +502,12 @@ def train(model,
                                                      ema_states_dict,
                                                      done_flag=iter == iters,
                                                      ema=use_ema)
+                        # logger.info(
+                        #     '[EVAL] The EMA model with the best validation mIoU ({:.4f}) was saved at iter {}.'
+                        #     .format(best_ema_mean_iou, best_ema_model_iter))
                         logger.info(
-                            '[EVAL] The EMA model with the best validation mIoU ({:.4f}) was saved at iter {}.'
-                            .format(best_ema_mean_iou, best_ema_model_iter))
+                            '[EVAL] The EMA model with the best validation mIoU ({:.4f}) '
+                            .format(best_ema_mean_iou))
 
                     if use_vdl:
                         log_writer.add_scalar('Evaluate/mIoU', mean_iou, iter)

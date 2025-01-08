@@ -41,7 +41,7 @@ val_dataset:
 
 optimizer:
   type: AdamW
-  weight_decay: 1.0e-3
+  weight_decay: 5.0e-4
 
 lr_scheduler:
   type: CosineAnnealingDecay
@@ -55,9 +55,14 @@ loss:
   coef: [1]
 
 model:
-  type: TopFormer
-  head_use_dw: True
-  backbone:
-    type: TopTransformer_Tiny
-#    lr_mult: 0.1
-    pretrained: ../premodels/topformer_tiny.pdparams
+  type: SeaFormerSeg
+  backbone: 
+    type: SeaFormer_large
+    pretrained: ../premodels/seaformer_large_imagenet_pretrained.pdparams
+  head_channels: 192
+  embed_dims: [128, 160, 192]
+  in_index: [0, 1, 2, 3]
+  is_dw: True
+  dropout_ratio: 0.1
+  align_corners: True
+  input_transform: 'multiple_select'

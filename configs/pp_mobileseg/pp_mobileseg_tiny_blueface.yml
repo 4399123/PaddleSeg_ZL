@@ -1,6 +1,6 @@
 batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-max_epoch: 400
+max_epoch: 350
 
 train_dataset:
   type: Dataset
