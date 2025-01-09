@@ -1,12 +1,14 @@
-batch_size: 32  # total: 4*6
+batch_size: 12  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 300
 
 train_dataset:
   type: Dataset
+#  dataset_root: C:\D\github_zl\BlueFaceDataX2_PP
   dataset_root: ../../BlueFaceDataX2_PP
   num_classes: 9
   mode: train
+#  train_path: C:\D\github_zl\BlueFaceDataX2_PP/train.txt
   train_path: ../../BlueFaceDataX2_PP/train.txt
   transforms:
     - type: ResizeStepScaling
@@ -14,7 +16,7 @@ train_dataset:
       max_scale_factor: 1.25
       scale_step_size: 0.05
     - type: RandomPaddingCrop
-      crop_size: [512, 512]
+      crop_size: [112, 112]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
@@ -27,9 +29,11 @@ train_dataset:
 
 val_dataset:
   type: Dataset
+#  dataset_root: C:\D\github_zl\BlueFaceDataX2_PP
   dataset_root: ../../BlueFaceDataX2_PP
   num_classes: 9
   mode: val
+#  val_path: C:\D\github_zl\BlueFaceDataX2_PP/val.txt
   val_path: ../../BlueFaceDataX2_PP/val.txt
   transforms:
     - type: Normalize

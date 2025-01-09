@@ -12,3 +12,4 @@ premodels/topformer_tiny.pdparams
 premodels/pp_mobileseg_base.pdparams
 premodels/seaformer_base_imagenet_pretrained.pdparams
 premodels/PP_STDCNet2.pdparams
+premodels/seaformer_large_imagenet_pretrained.pdparams

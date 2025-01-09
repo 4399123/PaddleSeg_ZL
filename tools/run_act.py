@@ -34,12 +34,12 @@ def argsparser():
     parser.add_argument(
         '--config_path',
         type=str,
-        default='./configs/datasets/pp_liteseg_2.0_data.yml',
+        default='./act_configs/datasets/seaformer_base_1.0_data.yml',
         help="path of the config include data config.")
     parser.add_argument(
         '--act_config_path',
         type=str,
-        default='./configs/ppliteseg/ppliteseg_qat_test.yaml',
+        default='./act_configs/seaformer/seaformer_base_qat.yaml',
         help="path of the auto compression config.")
     parser.add_argument(
         '--save_dir',
@@ -95,8 +95,8 @@ def eval_function(exe, compiled_test_program, test_feed_names, test_fetch_list):
 
         paddle.disable_static()
         logit = logits[0]  # logit shape is 3, except  data['trans_info'] needs to be empty
-        for i in range(len(data['trans_info'][::-1][0][1])):
-            data['trans_info'][::-1][0][1][i] = paddle.to_tensor(data['trans_info'][::-1][0][1][i])
+        # for i in range(len(data['trans_info'][::-1][0][1])):
+        #     data['trans_info'][::-1][0][1][i] = paddle.to_tensor(data['trans_info'][::-1][0][1][i])
         logit = reverse_transform(
             paddle.to_tensor(logit).unsqueeze(0), data['trans_info'], mode='bilinear')
         pred = paddle.to_tensor(logit).squeeze(0)
@@ -191,6 +191,7 @@ def main(args):
         config=act_config,
         train_dataloader=train_dataloader,
         eval_callback=eval_function if rank_id == 0 else None,
+        # eval_callback= None,
         deploy_hardware=act_config['Global'].get('deploy_hardware') or None,
         input_shapes=act_config['Global'].get('input_shapes', None))
 

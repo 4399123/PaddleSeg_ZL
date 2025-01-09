@@ -1,0 +1,28 @@
+_base_: '../../../configs/seaformer/seaformer_base_blueface.yml'
+
+train_dataset:
+  transforms:
+    - type: ResizeStepScaling
+      min_scale_factor: 0.75
+      max_scale_factor: 1.25
+      scale_step_size: 0.05
+    - type: RandomPaddingCrop
+      im_padding_value: 0.0
+      label_padding_value: 0
+      loop_times: 5
+      crop_size: [512, 512]
+    - type: RandomHorizontalFlip
+    - type: RandomVerticalFlip
+    - type: RandomDistort
+      brightness_range: 0.4
+      contrast_range: 0.4
+      saturation_range: 0.4
+    - type: Normalize
+      mean: [ 0.46962251, 0.4464104, 0.40718787 ]
+      std: [ 0.27469736, 0.27012361, 0.28515933 ]
+  mode: train
+
+test_config:
+  aug_eval: True
+#  scales: 1.0
+  scales: 1.0

@@ -41,7 +41,7 @@ val_dataset:
 
 optimizer:
   type: AdamW
-  weight_decay: 1.0e-3
+  weight_decay: 5.0e-4
 
 lr_scheduler:
   type: CosineAnnealingDecay
