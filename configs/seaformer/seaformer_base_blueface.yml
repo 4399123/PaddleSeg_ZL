@@ -2,12 +2,17 @@ batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 350
 
+num_classes: &num_classes 9
+dataset_root: &dataset_root ../../BlueFaceDataX2_PP
+train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
+val_path: &val_path ../../BlueFaceDataX2_PP/val.txt
+
 train_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: train
-  train_path: ../../BlueFaceDataX2_PP/train.txt
+  train_path: *train_path
   transforms:
     - type: ResizeStepScaling
       min_scale_factor: 0.75
@@ -30,10 +35,10 @@ train_dataset:
 
 val_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: val
-  val_path: ../../BlueFaceDataX2_PP/val.txt
+  val_path: *val_path
   transforms:
     - type: Normalize
       mean: [ 0.46962251, 0.4464104, 0.40718787 ]
@@ -59,7 +64,6 @@ model:
   backbone: 
     type: SeaFormer_base
     pretrained: ../premodels/seaformer_base_imagenet_pretrained.pdparams
-  num_classes: 9
   head_channels: 160
   embed_dims: [128, 160]
   is_dw: True

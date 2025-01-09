@@ -7,7 +7,7 @@ Distillation:
   alpha: 1.0
   loss: l2
   node:
-  - conv2d_215.tmp_0 # change to the name of the output of the last conv in the model.pdmodel in netron
+  - conv2d_135.tmp_0 # change to the name of the output of the last conv in the model.pdmodel in netron
 
 QuantAware:
   onnx_format: True
@@ -16,8 +16,8 @@ QuantAware:
   - depthwise_conv2d
 
 TrainConfig:
-  epochs: 40
-  eval_iter: 20
+  epochs: 10
+  eval_iter: 40
   learning_rate: 0.0001
   optimizer_builder:
     optimizer: 

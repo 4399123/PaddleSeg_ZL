@@ -1,13 +1,18 @@
-batch_size: 32  # total: 4*6
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 350
+batch_size: 2  # total: 4*6
+
+num_classes: &num_classes 9
+dataset_root: &dataset_root ../../BlueFaceDataX2_PP_Test
+train_path: &train_path ../../BlueFaceDataX2_PP_Test/train.txt
+val_path: &val_path ../../BlueFaceDataX2_PP_Test/val.txt
 
 train_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: train
-  train_path: ../../BlueFaceDataX2_PP/train.txt
+  train_path: *train_path
   transforms:
     - type: ResizeStepScaling
       min_scale_factor: 0.75
@@ -17,7 +22,7 @@ train_dataset:
       im_padding_value: 0.0
       label_padding_value: 0
       loop_times: 2
-      crop_size: [512, 512]
+      crop_size: [112, 112]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
@@ -30,10 +35,10 @@ train_dataset:
 
 val_dataset:
   type: Dataset
-  dataset_root: ../../BlueFaceDataX2_PP
-  num_classes: 9
+  dataset_root: *dataset_root
+  num_classes: *num_classes
   mode: val
-  val_path: ../../BlueFaceDataX2_PP/val.txt
+  val_path: *val_path
   transforms:
     - type: Normalize
       mean: [ 0.46962251, 0.4464104, 0.40718787 ]
@@ -59,7 +64,6 @@ model:
   backbone: 
     type: SeaFormer_tiny
     pretrained: ../premodels/seaformer_tiny_imagenet_pretrained.pdparams
-  num_classes: 9
   head_channels: 96
   embed_dims: [64, 96]
   is_dw: True

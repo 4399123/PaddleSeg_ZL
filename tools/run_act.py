@@ -34,12 +34,12 @@ def argsparser():
     parser.add_argument(
         '--config_path',
         type=str,
-        default='./act_configs/datasets/seaformer_base_1.0_data.yml',
+        default='./act_configs/datasets/seaformer_tiny_1.0_data.yml',
         help="path of the config include data config.")
     parser.add_argument(
         '--act_config_path',
         type=str,
-        default='./act_configs/seaformer/seaformer_base_qat.yaml',
+        default='./act_configs/seaformer/seaformer_tiny_qat.yaml',
         help="path of the auto compression config.")
     parser.add_argument(
         '--save_dir',
