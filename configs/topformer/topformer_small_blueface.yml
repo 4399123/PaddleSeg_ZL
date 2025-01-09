@@ -46,7 +46,7 @@ val_dataset:
 
 optimizer:
   type: AdamW
-  weight_decay: 1.0e-3
+  weight_decay: 5.0e-4
 
 lr_scheduler:
   type: CosineAnnealingDecay
@@ -63,6 +63,6 @@ model:
   type: TopFormer
   head_use_dw: True
   backbone:
-    type: TopTransformer_Tiny
+    type: TopTransformer_Small
 #    lr_mult: 0.1
-    pretrained: ../premodels/topformer_tiny.pdparams
+    pretrained: ../premodels/topformer_small.pdparams

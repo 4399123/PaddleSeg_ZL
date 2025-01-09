@@ -3,9 +3,9 @@ max_epoch: 350
 batch_size: 2  # total: 4*6
 
 num_classes: &num_classes 9
-dataset_root: &dataset_root ../../BlueFaceDataX2_PP_Test
-train_path: &train_path ../../BlueFaceDataX2_PP_Test/train.txt
-val_path: &val_path ../../BlueFaceDataX2_PP_Test/val.txt
+dataset_root: &dataset_root ../../BlueFaceDataX2_PP
+train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
+val_path: &val_path ../../BlueFaceDataX2_PP/val.txt
 
 train_dataset:
   type: Dataset
@@ -22,7 +22,7 @@ train_dataset:
       im_padding_value: 0.0
       label_padding_value: 0
       loop_times: 2
-      crop_size: [112, 112]
+      crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
