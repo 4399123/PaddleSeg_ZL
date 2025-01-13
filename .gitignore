@@ -14,3 +14,5 @@ premodels/seaformer_base_imagenet_pretrained.pdparams
 premodels/PP_STDCNet2.pdparams
 premodels/seaformer_large_imagenet_pretrained.pdparams
 premodels/topformer_small.pdparams
+premodels/topformer_base.pdparams
+premodels/seaformer_small_imagenet_pretrained.pdparams

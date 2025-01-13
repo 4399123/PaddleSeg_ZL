@@ -64,5 +64,5 @@ model:
   in_index: [0, 1, 2, 3]
   is_dw: True
   dropout_ratio: 0.1
-  align_corners: True
+  align_corners: False
   input_transform: 'multiple_select'

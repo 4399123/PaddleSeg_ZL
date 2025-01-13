@@ -21,7 +21,7 @@ train_dataset:
     - type: RandomPaddingCrop
       im_padding_value: 0.0
       label_padding_value: 0
-      loop_times: 5
+      loop_times: 2
       crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
@@ -59,10 +59,15 @@ loss:
     - type: OhemCrossEntropyLoss
   coef: [1]
 
+
 model:
-  type: TopFormer
-  head_use_dw: True
-  backbone:
-    type: TopTransformer_Tiny
-#    lr_mult: 0.1
-    pretrained: ../premodels/topformer_tiny.pdparams
+  type: SeaFormerSeg
+  backbone: 
+    type: SeaFormer_small
+    pretrained: ../premodels/seaformer_small_imagenet_pretrained.pdparams
+  head_channels: 128
+  embed_dims: [96, 128]
+  is_dw: True
+  dropout_ratio: 0.1
+  align_corners: False
+  input_transform: 'multiple_select'

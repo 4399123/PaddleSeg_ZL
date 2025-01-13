@@ -1,7 +1,7 @@
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
-
+max_epoch: 350
 batch_size: 32  # total: 4*6
-max_epoch: 300
+
 num_classes: &num_classes 9
 dataset_root: &dataset_root ../../BlueFaceDataX2_PP
 train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
@@ -19,6 +19,9 @@ train_dataset:
       max_scale_factor: 1.25
       scale_step_size: 0.05
     - type: RandomPaddingCrop
+      im_padding_value: 0.0
+      label_padding_value: 0
+      loop_times: 5
       crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
@@ -41,28 +44,26 @@ val_dataset:
       mean: [ 0.46962251, 0.4464104, 0.40718787 ]
       std: [ 0.27469736, 0.27012361, 0.28515933 ]
 
-
 optimizer:
   type: AdamW
-  weight_decay: 1.0e-3
+  weight_decay: 5.0e-4
+  custom_cfg:
+    - name: backbone
+      lr_mult: 0.1
 
 lr_scheduler:
   type: CosineAnnealingDecay
-  learning_rate: 0.0002
+  learning_rate: 0.002
   eta_min: 5.0e-6
   warmup_start_lr: 0.0001
 
 loss:
   types:
     - type: OhemCrossEntropyLoss
-    - type: OhemCrossEntropyLoss
-    - type: OhemCrossEntropyLoss
-  coef: [1, 1, 1]
+  coef: [1]
 
 model:
-  type: PPLiteSeg
+  type: TopFormer
   backbone:
-    type: STDC1
-    pretrained: ../premodels/PP_STDCNet1.pdparams
-  arm_out_chs: [24, 24, 48]
-  seg_head_inter_chs: [16, 32, 32]
+    type: TopTransformer_Base
+    pretrained: ../premodels/topformer_base.pdparams

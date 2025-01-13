@@ -1,2 +1,6 @@
 
 paddle2onnx --model_dir tools  --model_filename onnx/model.pdmodel  --params_filename onnx/model.pdiparams  --opset_version 11 --save_file tools/onnx/best.onnx 
+
+
+
+python run_seg.py   --act_config_path='configs\ppliteseg\ppliteseg_qat.yaml'  --save_dir='save_quant_model_qat'  --config_path='configs\datasets\pp_liteseg_1.0_data.yml'
