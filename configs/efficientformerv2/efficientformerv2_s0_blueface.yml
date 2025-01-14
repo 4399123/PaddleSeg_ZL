@@ -1,7 +1,6 @@
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
+batch_size: 32  # total: 4*6
 max_epoch: 400
-batch_size: 48  # total: 4*6
-
 num_classes: &num_classes 9
 dataset_root: &dataset_root ../../BlueFaceDataX2_PP
 train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
@@ -21,8 +20,8 @@ train_dataset:
     - type: RandomPaddingCrop
       im_padding_value: 0.0
       label_padding_value: 0
-      loop_times: 5
-      crop_size: [512, 512]
+      loop_times: 2
+      crop_size: [256, 256]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
@@ -44,12 +43,10 @@ val_dataset:
       mean: [ 0.46962251, 0.4464104, 0.40718787 ]
       std: [ 0.27469736, 0.27012361, 0.28515933 ]
 
+
 optimizer:
   type: AdamW
   weight_decay: 5.0e-4
-#  custom_cfg:
-#    - name: backbone
-#      lr_mult: 0.1
 
 lr_scheduler:
   type: CosineAnnealingDecay
@@ -62,8 +59,10 @@ loss:
     - type: OhemCrossEntropyLoss
   coef: [1]
 
+
+
 model:
-  type: TopFormer
+  type: EfficientFormerSeg
   backbone:
-    type: TopTransformer_Base
-    pretrained: ../premodels/topformer_base.pdparams
+    type: Efficientformerv2_s0
+    pretrained: ../premodels/efficientfomrerv2_s0.pdparams

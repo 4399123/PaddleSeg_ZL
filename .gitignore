@@ -16,3 +16,4 @@ premodels/seaformer_large_imagenet_pretrained.pdparams
 premodels/topformer_small.pdparams
 premodels/topformer_base.pdparams
 premodels/seaformer_small_imagenet_pretrained.pdparams
+premodels/efficientfomrerv2_s0.pdparams
