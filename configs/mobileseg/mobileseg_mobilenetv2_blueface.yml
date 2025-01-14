@@ -1,6 +1,6 @@
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 batch_size: 32  # total: 4*6
-max_epoch: 400
+max_epoch: 350
 num_classes: &num_classes 9
 dataset_root: &dataset_root ../../BlueFaceDataX2_PP
 train_path: &train_path ../../BlueFaceDataX2_PP/train.txt
@@ -50,19 +50,23 @@ optimizer:
 
 lr_scheduler:
   type: CosineAnnealingDecay
-  learning_rate: 0.0003
+  learning_rate: 0.0002
   eta_min: 5.0e-6
   warmup_start_lr: 0.0001
 
 loss:
   types:
     - type: OhemCrossEntropyLoss
-  coef: [1]
-
-
+    - type: OhemCrossEntropyLoss
+    - type: OhemCrossEntropyLoss
+  coef: [1, 1, 1]
 
 model:
-  type: EfficientFormerSeg
+  type: MobileSeg
   backbone:
-    type: Efficientformerv2_s0
-    pretrained: ../premodels/efficientfomrerv2_s0.pdparams
+    type: MobileNetV2_x1_0 # out channels: [24, 32, 96, 320]
+    pretrained: ../premodels/mobileseg_mv2.pdparams
+  cm_bin_sizes: [1, 2, 4]
+  cm_out_ch: 128
+  arm_out_chs: [32, 64, 128]
+  seg_head_inter_chs: [32, 32, 32]
