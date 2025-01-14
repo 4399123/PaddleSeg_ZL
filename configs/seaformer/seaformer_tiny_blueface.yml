@@ -1,6 +1,6 @@
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 350
-batch_size: 2  # total: 4*6
+batch_size: 12  # total: 4*6
 
 num_classes: &num_classes 9
 dataset_root: &dataset_root ../../BlueFaceDataX2_PP
@@ -22,7 +22,7 @@ train_dataset:
       im_padding_value: 0.0
       label_padding_value: 0
       loop_times: 2
-      crop_size: [512, 512]
+      crop_size: [256, 256]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
@@ -54,9 +54,17 @@ lr_scheduler:
   eta_min: 5.0e-6
   warmup_start_lr: 0.0001
 
+#loss:
+#  types:
+#    - type: OhemCrossEntropyLoss
+#  coef: [1]
 loss:
   types:
-    - type: OhemCrossEntropyLoss
+    - type: MixedLoss
+      losses:
+        - type: OhemCrossEntropyLoss
+        - type: LogCosDiceLoss
+      coef: [1.0, 3.0]
   coef: [1]
 
 model:
