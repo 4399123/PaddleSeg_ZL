@@ -18,3 +18,4 @@ premodels/topformer_base.pdparams
 premodels/seaformer_small_imagenet_pretrained.pdparams
 premodels/efficientfomrerv2_s0.pdparams
 premodels/mobileseg_mv2.pdparams
+premodels/ddrnet23.pdparams

@@ -149,7 +149,7 @@ class DAPPM(nn.Layer):
 
         self.scales = nn.LayerList([
             nn.Sequential(
-                nn.SyncBatchNorm(in_channels), nn.ReLU(),
+                nn.BatchNorm2D(in_channels), nn.ReLU(),
                 nn.Conv2D(in_channels,
                           branch_channels,
                           kernel_size=1,
@@ -163,7 +163,7 @@ class DAPPM(nn.Layer):
                                  padding=paddings[i - 1],
                                  exclusive=False),
                     nn.Sequential(
-                        nn.SyncBatchNorm(in_channels), nn.ReLU(),
+                        nn.BatchNorm2D(in_channels), nn.ReLU(),
                         nn.Conv2D(in_channels,
                                   branch_channels,
                                   kernel_size=1,
@@ -173,7 +173,7 @@ class DAPPM(nn.Layer):
             nn.Sequential(*[
                 # nn.AdaptiveAvgPool2D((1, 1)),
                 nn.Sequential(
-                    nn.SyncBatchNorm(in_channels), nn.ReLU(),
+                    nn.BatchNorm2D(in_channels), nn.ReLU(),
                     nn.Conv2D(in_channels,
                               branch_channels,
                               kernel_size=1,
@@ -183,7 +183,7 @@ class DAPPM(nn.Layer):
         for i in range(num_scales - 1):
             self.processes.append(
                 nn.Sequential(
-                    nn.SyncBatchNorm(branch_channels), nn.ReLU(),
+                    nn.BatchNorm2D(branch_channels), nn.ReLU(),
                     nn.Conv2D(branch_channels,
                               branch_channels,
                               kernel_size=3,
@@ -191,14 +191,14 @@ class DAPPM(nn.Layer):
                               bias_attr=False)))
 
         self.compression = nn.Sequential(
-            nn.SyncBatchNorm(branch_channels * num_scales), nn.ReLU(),
+            nn.BatchNorm2D(branch_channels * num_scales), nn.ReLU(),
             nn.Conv2D(branch_channels * num_scales,
                       out_channels,
                       kernel_size=1,
                       bias_attr=False))
 
         self.shortcut = nn.Sequential(
-            nn.SyncBatchNorm(in_channels), nn.ReLU(),
+            nn.BatchNorm2D(in_channels), nn.ReLU(),
             nn.Conv2D(in_channels, out_channels, kernel_size=1,
                       bias_attr=False))
 
@@ -263,7 +263,7 @@ class PAPPM(DAPPM):
                          kernel_sizes, strides, paddings, upsample_mode)
 
         self.processes = nn.Sequential(
-            nn.SyncBatchNorm(self.branch_channels * (self.num_scales - 1)),
+            nn.BatchNorm2D(self.branch_channels * (self.num_scales - 1)),
             nn.ReLU(),
             nn.Conv2D(self.branch_channels * (self.num_scales - 1),
                       self.branch_channels * (self.num_scales - 1),
@@ -390,7 +390,7 @@ class Bag(nn.Layer):
         super().__init__()
 
         self.conv = nn.Sequential(
-            nn.SyncBatchNorm(in_channels), nn.ReLU(),
+            nn.BatchNorm2D(in_channels), nn.ReLU(),
             nn.Conv2D(in_channels,
                       out_channels,
                       kernel_size,
@@ -575,7 +575,7 @@ class PIDNet(nn.Layer):
                              layer.weight.shape[2] * layer.weight.shape[3]
                     bound = 1 / math.sqrt(fan_in)
                     Uniform(-bound, bound)(layer.bias)
-            elif isinstance(layer, (nn.BatchNorm2D, nn.SyncBatchNorm)):
+            elif isinstance(layer, (nn.BatchNorm2D, nn.BatchNorm2D)):
                 Constant(1)(layer.weight)
                 Constant(0)(layer.bias)
 

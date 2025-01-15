@@ -169,7 +169,8 @@ class ConvBNReLU(nn.Layer):
             data_format = kwargs['data_format']
         else:
             data_format = 'NCHW'
-        self._batch_norm = SyncBatchNorm(out_channels, data_format=data_format)
+        # self._batch_norm = SyncBatchNorm(out_channels, data_format=data_format)
+        self._batch_norm = nn.BatchNorm2D(out_channels, data_format=data_format)
         self._relu = layers.Activation("relu")
 
     def forward(self, x):
@@ -274,7 +275,8 @@ class ConvBNAct(nn.Layer):
             data_format = kwargs['data_format']
         else:
             data_format = 'NCHW'
-        self._batch_norm = SyncBatchNorm(out_channels, data_format=data_format)
+        # self._batch_norm = SyncBatchNorm(out_channels, data_format=data_format)
+        self._batch_norm = nn.BatchNorm2D(out_channels, data_format=data_format)
 
         self._act_type = act_type
         if act_type is not None:

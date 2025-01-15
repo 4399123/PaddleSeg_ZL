@@ -103,13 +103,13 @@ class BasePIDHead(nn.Layer):
     def __init__(self, in_channels: int, channels: int):
         super().__init__()
         self.conv = nn.Sequential(
-            nn.SyncBatchNorm(in_channels), nn.ReLU(),
+            nn.BatchNorm2D(in_channels), nn.ReLU(),
             nn.Conv2D(in_channels,
                       channels,
                       kernel_size=3,
                       padding=1,
                       bias_attr=False))
-        self.norm = nn.SyncBatchNorm(channels)
+        self.norm = nn.BatchNorm2D(channels)
         self.act = nn.ReLU()
 
     def forward(self, x: Tensor, cls_seg: Optional[nn.Layer]) -> Tensor:
@@ -159,7 +159,7 @@ class PIDHead(nn.Layer):
                              layer.weight.shape[2] * layer.weight.shape[3]
                     bound = 1 / math.sqrt(fan_in)
                     Uniform(-bound, bound)(layer.bias)
-            elif isinstance(layer, (nn.BatchNorm2D, nn.SyncBatchNorm)):
+            elif isinstance(layer, (nn.BatchNorm2D, nn.BatchNorm2D)):
                 Constant(1)(layer.weight)
                 Constant(0)(layer.bias)
 
