@@ -171,7 +171,7 @@ class DAPPM(nn.Layer):
                 ]))
         self.scales.append(
             nn.Sequential(*[
-                nn.AdaptiveAvgPool2D((1, 1)),
+                # nn.AdaptiveAvgPool2D((1, 1)),
                 nn.Sequential(
                     nn.SyncBatchNorm(in_channels), nn.ReLU(),
                     nn.Conv2D(in_channels,
@@ -202,19 +202,39 @@ class DAPPM(nn.Layer):
             nn.Conv2D(in_channels, out_channels, kernel_size=1,
                       bias_attr=False))
 
+    # def forward(self, inputs: Tensor):
+    #     feats = []
+    #     feats.append(self.scales[0](inputs))
+    #
+    #     for i in range(1, self.num_scales):
+    #         feat_up = F.interpolate(self.scales[i](inputs),
+    #                                 size=inputs.shape[2:],
+    #                                 mode=self.unsample_mode)
+    #         feats.append(self.processes[i - 1](feat_up + feats[i - 1]))
+    #
+    #     return self.compression(paddle.concat(feats,
+    #                                           axis=1)) + self.shortcut(inputs)
     def forward(self, inputs: Tensor):
         feats = []
         feats.append(self.scales[0](inputs))
 
         for i in range(1, self.num_scales):
-            feat_up = F.interpolate(self.scales[i](inputs),
-                                    size=inputs.shape[2:],
-                                    mode=self.unsample_mode)
-            feats.append(self.processes[i - 1](feat_up + feats[i - 1]))
 
-        return self.compression(paddle.concat(feats,
-                                              axis=1)) + self.shortcut(inputs)
+            if(i==self.num_scales-1):
+                inputs = paddle.mean(inputs, axis=(2, 3), keepdim=True)
+                feat_up = F.interpolate(self.scales[i](inputs),
+                                        size=inputs.shape[2:],
+                                        mode=self.unsample_mode)
+                feats.append(self.processes[i - 1](feat_up + feats[i - 1]))
 
+            else:
+                feat_up = F.interpolate(self.scales[i](inputs),
+                                        size=inputs.shape[2:],
+                                        mode=self.unsample_mode)
+                feats.append(self.processes[i - 1](feat_up + feats[i - 1]))
+
+            return self.compression(paddle.concat(feats,
+                                                  axis=1)) + self.shortcut(inputs)
 
 class PAPPM(DAPPM):
     """PAPPM module in `PIDNet <https://arxiv.org/abs/2206.02066>`_.
@@ -252,15 +272,35 @@ class PAPPM(DAPPM):
                       groups=self.num_scales - 1,
                       bias_attr=False))
 
+    # def forward(self, inputs: Tensor):
+    #     x_ = self.scales[0](inputs)
+    #     feats = []
+    #     for i in range(1, self.num_scales):
+    #         feat_up = F.interpolate(self.scales[i](inputs),
+    #                                 size=inputs.shape[2:],
+    #                                 mode=self.unsample_mode,
+    #                                 align_corners=False)
+    #         feats.append(feat_up + x_)
+    #     scale_out = self.processes(paddle.concat(feats, axis=1))
+    #     return self.compression(paddle.concat([x_, scale_out],
+    #                                           axis=1)) + self.shortcut(inputs)
     def forward(self, inputs: Tensor):
         x_ = self.scales[0](inputs)
         feats = []
         for i in range(1, self.num_scales):
-            feat_up = F.interpolate(self.scales[i](inputs),
-                                    size=inputs.shape[2:],
-                                    mode=self.unsample_mode,
-                                    align_corners=False)
-            feats.append(feat_up + x_)
+            if(i==self.num_scales-1):
+                feat_up = F.interpolate(self.scales[i](inputs),
+                                        size=inputs.shape[2:],
+                                        mode=self.unsample_mode,
+                                        align_corners=False)
+                feats.append(feat_up + x_)
+            else:
+                inputs = paddle.mean(inputs, axis=(2, 3), keepdim=True)
+                feat_up = F.interpolate(self.scales[i](inputs),
+                                        size=inputs.shape[2:],
+                                        mode=self.unsample_mode,
+                                        align_corners=False)
+                feats.append(feat_up + x_)
         scale_out = self.processes(paddle.concat(feats, axis=1))
         return self.compression(paddle.concat([x_, scale_out],
                                               axis=1)) + self.shortcut(inputs)

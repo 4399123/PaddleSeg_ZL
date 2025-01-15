@@ -314,7 +314,7 @@ class DAPPM(nn.Layer):
             nn.Conv2D(inplanes, branch_planes, kernel_size=1, bias_attr=False),
         )
         self.scale4 = nn.Sequential(
-            nn.AdaptiveAvgPool2D((1, 1)),
+            # nn.AdaptiveAvgPool2D((1, 1)),
             layers.SyncBatchNorm(inplanes),
             nn.ReLU(),
             nn.Conv2D(inplanes, branch_planes, kernel_size=1, bias_attr=False),
@@ -379,8 +379,9 @@ class DAPPM(nn.Layer):
             F.interpolate(self.scale2(x), size=[h, w], mode='bilinear') + x1)
         x3 = self.process3(
             F.interpolate(self.scale3(x), size=[h, w], mode='bilinear') + x2)
+        xx = paddle.mean(x, axis=(2, 3), keepdim=True)
         x4 = self.process4(
-            F.interpolate(self.scale4(x), size=[h, w], mode='bilinear') + x3)
+            F.interpolate(self.scale4(xx), size=[h, w], mode='bilinear') + x3)
 
         out = self.compression(paddle.concat([x0, x1, x2, x3, x4],
                                              1)) + self.shortcut(x)

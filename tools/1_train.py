@@ -33,7 +33,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Model training')
 
     # Common params
-    parser.add_argument("--config", default='../configs/seaformer/seaformer_tiny_blueface.yml')
+    parser.add_argument("--config", default='../configs/pidnet/pidnet_small_blueface.yml')
     parser.add_argument('--device',default='gpu',choices=['cpu', 'gpu'])
     parser.add_argument('--save_dir',default='./output')
     parser.add_argument("--precision",default="fp32",choices=["fp32", "fp16"],)

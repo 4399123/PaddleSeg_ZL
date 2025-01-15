@@ -1,6 +1,6 @@
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 350
-batch_size: 32  # total: 4*6
+batch_size: 8  # total: 4*6
 
 num_classes: &num_classes 9
 dataset_root: &dataset_root ../../BlueFaceDataX2_PP
@@ -14,7 +14,6 @@ train_dataset:
   mode: train
   train_path: *train_path
   transforms:
-    - type: AddEdgeLabel
     - type: ResizeStepScaling
       min_scale_factor: 0.75
       max_scale_factor: 1.25
@@ -23,7 +22,7 @@ train_dataset:
       im_padding_value: 0.0
       label_padding_value: 0
       loop_times: 2
-      crop_size: [512, 512]
+      crop_size: [256, 256]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
@@ -47,7 +46,7 @@ val_dataset:
 
 optimizer:
   type: AdamW
-  weight_decay: 5.0e-4
+  weight_decay: 1.0e-3
 
 lr_scheduler:
   type: CosineAnnealingDecay
@@ -55,23 +54,21 @@ lr_scheduler:
   eta_min: 5.0e-6
   warmup_start_lr: 0.0001
 
-
 loss:
   types:
-    - type: CrossEntropyLoss
-      avg_non_ignore: False
     - type: OhemCrossEntropyLoss
-      thresh: 0.9
-    - type: BCELoss
-      weight: dynamic
-      edge_label: True
-    - type: OhemCrossEntropyLoss
-      thresh: 0.9
-  coef: [0.4, 1.0, 10.0, 1.0]
+  coef: [1]
+#loss:
+#  types:
+#    - type: MixedLoss
+#      losses:
+#        - type: OhemCrossEntropyLoss
+#        - type: LogCosDiceLoss
+#      coef: [1.0, 3.0]
+#  coef: [1]
+
 
 model:
-  type: PIDNet
-  head_channels: 128
-  backbone:
-    type: PIDNet_Small
-  pretrained: ../premodels/pidnet_small_imagenet1k.pdparams
+  type: DDRNet_23
+  enable_auxiliary_loss: False
+  pretrained: ../premodels/ddrnet23.pdparams
