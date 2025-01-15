@@ -60,18 +60,25 @@ for pic_path in tqdm(imgpaths):
     out = session.run(None,input_feed = { 'input' : img_input })
     # out=np.argmax(out[0],axis=1)
     out=out[0].astype('uint8')
-    pred= palette[out].squeeze()
+    pred= out.squeeze()
     pred=cv2.resize(pred,(o_W,o_H),interpolation=cv2.INTER_NEAREST)
+    predcpy=pred.copy()
+    pred[pred>0]=1
 
+    if (len(np.unique(out)) == 1): cv2.imwrite(os.path.join(outputpath,basename),imgbak)
 
-    #±£´æÍ¼Ïñ
-    n=0
-    # cv2.imwrite('./onnx/mask_{}.jpg'.format(n), pred)
+    contours, hierarchy = cv2.findContours(pred, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    img1=np.array(imgbak)
-    # img1=cv2.cvtColor(img1,cv2.COLOR_BGR2RGB)
+    for k in range(len(contours)):
+        point = contours[k][0][0]
+        x = point[0]
+        y = point[1]
+        id = int(predcpy[y][x])
+        color = palette[id]
+        line = np.array([contours[k]])
+        cv2.drawContours(imgbak, line, -1, color=(int(color[0]), int(color[1]), int(color[2])), thickness=3)
 
-    img=cv2.addWeighted(img1,0.3,pred,0.7,0)
-    cv2.imwrite(os.path.join(outputpath,basename),img)
+    cv2.imwrite(os.path.join(outputpath, basename), imgbak)
+
 
 
