@@ -70,6 +70,6 @@ loss:
 
 
 model:
-  type: DDRNet_23
+  type: DDRNet_23_Slim
   enable_auxiliary_loss: True
-  pretrained: ../premodels/ddrnet23.pdparams
+#  pretrained: ../premodels/ddrnet23.pdparams

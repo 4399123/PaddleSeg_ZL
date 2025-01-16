@@ -68,8 +68,8 @@ model:
     inj_type: AAMSx8
     out_feat_chs: [64, 128, 192]
     pretrained: ../premodels/pp_mobileseg_base.pdparams
-  upsample: vim  # During exportation, you need to change it to vim for using VIM
-#  upsample: intepolate  # During exportation, you need to change it to vim for using VIM
+#  upsample: vim  # During exportation, you need to change it to vim for using VIM
+  upsample: intepolate  # During exportation, you need to change it to vim for using VIM
 
 
 

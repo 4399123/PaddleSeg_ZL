@@ -427,3 +427,11 @@ def DDRNet_23(**kwargs):
                       spp_planes=128,
                       head_planes=128,
                       **kwargs)
+
+@manager.MODELS.add_component
+def DDRNet_23_Slim(**kwargs):
+    return DualResNet(block_layers=[2, 2, 2, 2],
+                      planes=32,
+                      spp_planes=96,
+                      head_planes=96,
+                      **kwargs)
