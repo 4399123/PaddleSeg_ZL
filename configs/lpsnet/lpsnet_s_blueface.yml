@@ -1,6 +1,6 @@
 iters: 99999999999   #无用参数，已经修改为根据训练数据集大小自适应变化
 max_epoch: 350
-batch_size: 8  # total: 4*6
+batch_size: 32  # total: 4*6
 
 num_classes: &num_classes 9
 dataset_root: &dataset_root ../../BlueFaceDataX2_PP
@@ -22,7 +22,7 @@ train_dataset:
       im_padding_value: 0.0
       label_padding_value: 0
       loop_times: 2
-      crop_size: [256, 256]
+      crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
     - type: RandomDistort
@@ -57,19 +57,12 @@ lr_scheduler:
 loss:
   types:
     - type: OhemCrossEntropyLoss
-    - type: OhemCrossEntropyLoss
-  coef: [1,1]
-#loss:
-#  types:
-#    - type: MixedLoss
-#      losses:
-#        - type: OhemCrossEntropyLoss
-#        - type: LogCosDiceLoss
-#      coef: [1.0, 3.0]
-#  coef: [1]
-
+  coef: [1]
 
 model:
-  type: DDRNet_23_Slim
-  enable_auxiliary_loss: True
-  pretrained: ../premodels/ddrnet23.pdparams
+  type: LPSNet
+  in_channels: 3
+  depths: [1, 3, 3, 10, 10]
+  channels: [8, 24, 48, 96, 96]
+  scale_ratios: [0.75, 0.25]
+  pretrained: ../premodels/lpsnet_s.pdparams

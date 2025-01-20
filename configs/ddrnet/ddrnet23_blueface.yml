@@ -54,19 +54,26 @@ lr_scheduler:
   eta_min: 5.0e-6
   warmup_start_lr: 0.0001
 
-loss:
-  types:
-    - type: OhemCrossEntropyLoss
-    - type: OhemCrossEntropyLoss
-  coef: [1,1]
 #loss:
 #  types:
-#    - type: MixedLoss
-#      losses:
-#        - type: OhemCrossEntropyLoss
-#        - type: LogCosDiceLoss
-#      coef: [1.0, 3.0]
-#  coef: [1]
+#    - type: OhemCrossEntropyLoss
+#    - type: OhemCrossEntropyLoss
+#  coef: [1,1]
+
+loss:
+  types:
+    - type: MixedLoss
+      losses:
+        - type: OhemCrossEntropyLoss
+        - type: LogCosDiceLoss
+      coef: [ 1.0, 3.0 ]
+
+    - type: MixedLoss
+      losses:
+        - type: OhemCrossEntropyLoss
+        - type: LogCosDiceLoss
+      coef: [1.0, 3.0]
+  coef: [1,1]
 
 
 model:
