@@ -26,8 +26,8 @@ from paddleseg.core.export import export
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Export Inference Model.')
-    parser.add_argument("--config", default='../configs/lpsnet/lpsnet_l_blueface.yml')
-    parser.add_argument('--model_path', default=r'../deepmodel/lpsnet_l/model.pdparams')
+    parser.add_argument("--config", default='../configs/lpsnet/lpsnet_s_blueface.yml')
+    parser.add_argument('--model_path', default=r'../deepmodel/lpsnet_s/model.pdparams')
     parser.add_argument('--save_dir',default='./onnx/')
     parser.add_argument("--input_shape",nargs='+',default=[-1,3,512,512])
     parser.add_argument(
