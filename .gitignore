@@ -21,3 +21,4 @@ premodels/mobileseg_mv2.pdparams
 premodels/ddrnet23.pdparams
 premodels/lpsnet_s.pdparams
 premodels/lpsnet_l.pdparams
+tools/results/

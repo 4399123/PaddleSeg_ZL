@@ -90,6 +90,20 @@ class SeaFormerSeg(nn.Layer):
 
     def forward(self, inputs):
         B, C, H, W = inputs.shape
+
+        sim=True
+        if sim:
+            inputs = paddle.cast(inputs, dtype='float32')
+            inputs = paddle.flip(inputs, axis=1)
+
+            mean_values = paddle.to_tensor([120.0, 114.0, 104.0], dtype='float32')
+            std_values = paddle.to_tensor([70.0, 69.0, 73.0], dtype='float32')
+
+            mean_values = mean_values.reshape([1, 3, 1, 1])
+            std_values = std_values.reshape([1, 3, 1, 1])
+            inputs = (inputs - mean_values) / std_values
+
+
         inputs = self.backbone(inputs)
 
         if self.input_transform == 'resize_concat':

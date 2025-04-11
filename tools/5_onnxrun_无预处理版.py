@@ -50,11 +50,12 @@ for pic_path in tqdm(imgpaths):
     basename=os.path.basename(pic_path)
     o_H,o_W = img_input.shape[0],img_input.shape[1]
     imgbak=img_input.copy()
-    img_input=img_input[:,:,::-1]
-    img_input=cv2.resize(img_input,(w,h)).astype(np.float32)
-    img_input-=mean                             #减均值
-    img_input/=std                              #除方差
-    img_input=np.array([np.transpose(img_input,(2,0,1))])
+    # img_input=img_input[:,:,::-1]
+    # img_input=cv2.resize(img_input,(w,h)).astype(np.float32)
+    # img_input-=mean                             #减均值
+    # img_input/=std                              #除方差
+
+    img_input=np.array([np.transpose(img_input.astype(np.float32),(2,0,1))])
 
     #模型推理
     out = session.run(None,input_feed = { 'input' : img_input })
