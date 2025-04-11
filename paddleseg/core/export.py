@@ -53,7 +53,8 @@ def export(args, model=None, save_dir=None, use_ema=False):
 
     shape = [None, 3, None, None] if args.input_shape is None \
         else args.input_shape
-    input_spec = [paddle.static.InputSpec(shape=shape, dtype='float32')]
+    # input_spec = [paddle.static.InputSpec(shape=shape, dtype='float32')]
+    input_spec = [paddle.static.InputSpec(shape=shape, dtype='int32')]
     model.eval()
     model = paddle.jit.to_static(model, input_spec=input_spec)
     uniform_output_enabled = cfg.dic.get('uniform_output_enabled', False)
