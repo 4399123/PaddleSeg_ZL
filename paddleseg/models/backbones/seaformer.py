@@ -136,6 +136,7 @@ class SeaFormer(nn.Layer):
                 zeros_(layer.bias)
                 ones_(layer.weight)
 
+        self.pretrained=eval(self.pretrained)
         if self.pretrained is not None:
             utils.load_pretrained_model(self, self.pretrained)
 
