@@ -91,7 +91,7 @@ class SeaFormerSeg(nn.Layer):
     def forward(self, inputs):
         B, C, H, W = inputs.shape
 
-        sim=True
+        sim=False
         if sim:
             inputs = paddle.cast(inputs, dtype='float32')
             inputs = paddle.flip(inputs, axis=1)

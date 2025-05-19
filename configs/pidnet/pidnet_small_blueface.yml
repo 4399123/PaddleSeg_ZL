@@ -22,7 +22,7 @@ train_dataset:
     - type: RandomPaddingCrop
       im_padding_value: 0.0
       label_padding_value: 0
-      loop_times: 2
+      loop_times: 10
       crop_size: [512, 512]
     - type: RandomHorizontalFlip
     - type: RandomVerticalFlip
