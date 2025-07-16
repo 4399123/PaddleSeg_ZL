@@ -80,4 +80,5 @@ model:
   dropout_ratio: 0.1
   align_corners: False
   input_transform: 'multiple_select'
+  export_onnx: False
 #  pretrained:

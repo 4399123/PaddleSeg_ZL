@@ -53,6 +53,7 @@ class SeaFormerSeg(nn.Layer):
                  dropout_ratio=0.1,
                  align_corners=False,
                  input_transform='multiple_select',
+                 export_onnx=False,
                  pretrained=None):
 
         super().__init__()
@@ -85,16 +86,29 @@ class SeaFormerSeg(nn.Layer):
                 in_channels[i + 1],
                 embed_dim=embed_dims[i])
             setattr(self, f"fuse{i + 1}", fuse)
-
+        self.export_onnx = export_onnx
         self.init_weight()
 
     def forward(self, inputs):
         B, C, H, W = inputs.shape
 
-        sim=False
-        if sim:
+        # #输入是单通道形式
+        # if self.export_onnx:
+        #     inputs = paddle.cast(inputs, dtype='float32')
+        #     inputs = paddle.expand(inputs, shape=[B, 3, paddle.shape(inputs)[2], paddle.shape(inputs)[3]])  # 转3通道RGB等
+        #     inputs = paddle.flip(inputs, axis=1)
+        #
+        #     mean_values = paddle.to_tensor([120.0, 114.0, 104.0], dtype='float32')
+        #     std_values = paddle.to_tensor([70.0, 69.0, 73.0], dtype='float32')
+        #
+        #     mean_values = mean_values.reshape([1, 3, 1, 1])
+        #     std_values = std_values.reshape([1, 3, 1, 1])
+        #     inputs = (inputs - mean_values) / std_values
+
+        #输入是三通道形式BGR
+        if self.export_onnx:
             inputs = paddle.cast(inputs, dtype='float32')
-            inputs = paddle.flip(inputs, axis=1)
+            inputs = paddle.flip(inputs, axis=1)    # 转RGB
 
             mean_values = paddle.to_tensor([120.0, 114.0, 104.0], dtype='float32')
             std_values = paddle.to_tensor([70.0, 69.0, 73.0], dtype='float32')
