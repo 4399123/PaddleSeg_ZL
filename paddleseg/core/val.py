@@ -251,7 +251,7 @@ def evaluate(model,
     if print_detail:
         logger.info('---------------------------------------------------------------------------------')
         infor = "[EVAL] #Images: {} |mIoU: {:.4f} |mAcc: {:.4f} |recall: {:.4f} ".format(
-            len(eval_dataset), miou, np.average(class_precision), np.average(class_precision))
+            len(eval_dataset), miou, np.average(class_precision), np.average(class_recall))
         infor = infor + auc_infor if auc_roc else infor
         # printlabels.insert(0,'Class')
         iou_list = np.round(class_iou, 5).tolist()
